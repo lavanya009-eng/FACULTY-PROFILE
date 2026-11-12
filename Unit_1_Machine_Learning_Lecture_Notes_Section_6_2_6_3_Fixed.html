@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)'], ['$', '$']], displayMath: [['\\[','\\]'], ['$$','$$']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+  chtml: { scale: 1.08, displayAlign: 'center', displayIndent: '0' }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<title>Machine Learning – Unit I Lecture Notes</title>
+<style>
+:root{--navy:#12345a;--blue:#1e5b91;--teal:#087f8c;--ink:#263445;--muted:#5e6c7b;--line:#d9e2ec;--paper:#fff;--pale:#eef5fb;--mint:#eaf7f4;--gold:#fff6df}
+*{box-sizing:border-box}
+body{margin:0;background:#edf2f7;color:var(--ink);font:16px/1.68 Georgia,"Times New Roman",serif}
+.shell{max-width:1120px;margin:28px auto;background:var(--paper);box-shadow:0 12px 38px #18324b18}
+.hero{padding:46px 58px 42px;background:linear-gradient(125deg,#102d50,#1d5c8c 65%,#087f8c);color:#fff}
+.kicker{font:700 12px/1.4 Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#bfe9f0}
+.hero h1{font:700 34px/1.18 Arial,sans-serif;margin:12px 0 8px}
+.hero h2{font:400 19px/1.4 Arial,sans-serif;margin:0;color:#e2f1fa}
+.hero .meta{margin-top:28px;padding-top:18px;border-top:1px solid #ffffff45;font:14px/1.7 Arial,sans-serif;color:#e4edf6}
+.layout{display:grid;grid-template-columns:245px 1fr;gap:0}
+nav{background:#f5f8fb;border-right:1px solid var(--line);padding:28px 22px;font:13px/1.5 Arial,sans-serif}
+nav strong{display:block;color:var(--navy);font-size:14px;margin-bottom:12px}
+nav a{display:block;text-decoration:none;color:#40566e;padding:5px 0;border-bottom:1px solid #e7edf3}
+main{padding:38px 54px 60px;min-width:0}
+h2{font:700 25px/1.25 Arial,sans-serif;color:var(--navy);margin:42px 0 16px;padding-bottom:9px;border-bottom:2px solid #d8e6f1}
+h3{font:700 19px/1.35 Arial,sans-serif;color:var(--blue);margin:27px 0 10px}
+h4{font:700 16px Arial,sans-serif;color:#35516e;margin:20px 0 7px}
+p{margin:9px 0 13px}
+ul,ol{padding-left:25px}
+li{margin:5px 0}
+.lead{font-size:18px;color:#334e68}
+.info,.example,.board,.activity,.warning,.takeaway{padding:17px 20px;margin:18px 0;border-radius:9px;border:1px solid var(--line)}
+.info{background:var(--pale);border-left:5px solid var(--blue)}
+.example{background:#f6fbfa;border-left:5px solid var(--teal)}
+.board{background:#f8f9fc;border:1px dashed #8ca4bd}
+.activity{background:#f0faf5;border-left:5px solid #32956e}
+.warning{background:#fff9ec;border-left:5px solid #d39a2f}
+.takeaway{background:#f2f7ff;border-left:5px solid #456eb0}
+.label{font:700 11px Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;color:#55718d;margin-bottom:7px}
+table{border-collapse:collapse;width:100%;margin:14px 0 20px;font-size:15px}
+th{background:#eaf1f8;color:#173b60;text-align:left;font:700 13px Arial,sans-serif}
+th,td{border:1px solid #ccd8e3;padding:9px 10px;vertical-align:top}
+tr:nth-child(even) td{background:#fafcfe}
+.formula{font:18px/1.9 "Cambria Math","STIX Two Math","Times New Roman",serif;text-align:center;background:#f7f9fc;padding:16px 18px;border-radius:7px;margin:14px 0;overflow-x:auto;overflow-wrap:normal}
+mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}
+mjx-container[display="true"]{margin:0.45em 0!important}
+@media print{mjx-container{overflow:visible!important}.formula{break-inside:avoid}}
+.small{font-size:14px;color:var(--muted)}
+.pill{display:inline-block;background:#e3f0f7;color:#174b70;padding:3px 9px;border-radius:20px;font:700 11px Arial,sans-serif;margin:3px}
+hr{border:0;border-top:1px solid var(--line);margin:30px 0}
+.footer{padding:25px 55px;background:#f5f8fb;border-top:1px solid var(--line);font:13px/1.6 Arial,sans-serif;color:#617386}
+button{background:#123f68;color:white;border:0;padding:10px 16px;border-radius:6px;font:700 13px Arial,sans-serif;cursor:pointer}
+.controls{display:flex;justify-content:flex-end;gap:10px;padding:15px 24px;background:#f5f8fb;border-bottom:1px solid var(--line)}
+@media(max-width:800px){.layout{grid-template-columns:1fr}nav{border-right:0;border-bottom:1px solid var(--line)}main{padding:28px 22px}.hero{padding:34px 25px}.hero h1{font-size:28px}.shell{margin:0}.footer{padding:22px}}
+@media print{
+ body{background:#fff;font-size:11pt;color:#111}
+ .shell{max-width:none;margin:0;box-shadow:none}
+ .controls,nav{display:none!important}
+ .layout{display:block}
+ .hero{background:#fff!important;color:#111;padding:18mm 15mm 10mm;border-bottom:2px solid #234}
+ .hero h1,.hero h2,.hero .meta,.kicker{color:#111}
+ main{padding:8mm 15mm}
+ h2{page-break-after:avoid;font-size:18pt}
+ h3{page-break-after:avoid;font-size:14pt}
+ table,.example,.info,.board,.activity,.warning{break-inside:avoid}
+ a{color:inherit;text-decoration:none}
+ .footer{padding:8mm 15mm}
+}
+
+.subsection-heading{display:block;clear:both;width:100%;margin:30px 0 12px;padding:10px 14px;background:#eef5fb;border-left:4px solid #1e5b91;border-radius:0 7px 7px 0;color:#17466f}
+#notation{display:block;width:100%;max-width:100%;clear:both}
+#notation p,#notation table,#notation .formula,#notation .takeaway{width:100%;max-width:100%}
+@media print{.subsection-heading{break-after:avoid;page-break-after:avoid;background:#eef5fb!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="controls">
+<button onclick="window.print()">Print / Save as PDF</button>
+<button onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top</button>
+</div>
+<header class="hero">
+<div class="kicker">Department of Computer Science &amp; Engineering</div>
+<h1>MACHINE LEARNING</h1>
+<h2>UNIT I – Introduction; Concept Learning and the General-to-Specific Ordering</h2>
+<div class="meta">
+<strong>Dr. K. Lavanya</strong> · Assistant Professor<br>
+University College of Sciences · Acharya Nagarjuna University, Nagarjuna Nagar<br>
+Prescribed Textbook: Tom M. Mitchell, <em>Machine Learning</em>
+</div>
+</header>
+<div class="layout">
+<nav>
+<strong>UNIT I CONTENTS</strong>
+<a href="#overview">Unit overview</a>
+<a href="#intro">1. Introduction to ML</a>
+<a href="#wellposed">2. Well-posed learning problems</a>
+<a href="#design">3. Designing a learning system</a>
+<a href="#issues">4. Perspectives and issues</a>
+<a href="#concept">5. Concept learning</a>
+<a href="#notation">6. Concept-learning notation</a>
+<a href="#search">7. Concept learning as search</a>
+<a href="#ordering">8. General-to-specific ordering</a>
+<a href="#finds">9. Find-S algorithm</a>
+<a href="#version">10. Version spaces</a>
+<a href="#candidate">11. Candidate-Elimination</a>
+<a href="#bias">12. Inductive bias</a>
+<a href="#practice">Solved practice and activities</a>
+<a href="#revision">Revision and questions</a>
+</nav>
+<main>
+<section id="overview">
+<h2>UNIT I – Overview</h2>
+<p class="lead">This unit introduces the central question of machine learning: how can a computer program improve its performance through experience? It then develops the idea of learning concepts from labelled examples and organizing possible explanations using a general-to-specific ordering.</p>
+<div class="info"><div class="label">Learning outcomes</div>
+After completing this unit, students should be able to:
+<ul>
+<li>Explain machine learning and distinguish it from conventional rule-based programming.</li>
+<li>Define a well-posed learning problem using Task (T), Performance measure (P), and Experience (E).</li>
+<li>Describe the major components involved in designing a learning system.</li>
+<li>Differentiate supervised, unsupervised, and reinforcement learning.</li>
+<li>Represent a concept-learning problem using instances, target concepts, hypotheses, and training examples.</li>
+<li>Explain hypothesis spaces and the general-to-specific ordering.</li>
+<li>Apply Find-S and explain version spaces and Candidate-Elimination.</li>
+<li>Explain why inductive bias is required in machine learning.</li>
+</ul></div>
+<p><strong>Suggested teaching time:</strong> 8–10 hours (adjust according to the departmental timetable).</p>
+<p><strong>Prerequisites:</strong> Basic programming, data representation, elementary probability and logical reasoning.</p>
+<p><strong>Keywords:</strong> Experience, task, performance measure, training examples, target function, hypothesis, instance space, hypothesis space, generalization, Find-S, version space, Candidate-Elimination, inductive bias.</p>
+</section>
+
+<section id="intro">
+<h2>1. Introduction to Machine Learning</h2>
+<h3>1.1 What is Machine Learning?</h3>
+<p>Machine Learning (ML) is a branch of Artificial Intelligence concerned with developing computer programs that improve their performance through experience. Instead of writing every decision rule manually, a developer supplies data or experience and chooses a learning procedure. The procedure constructs a model that can make predictions or decisions on new cases.</p>
+<div class="info"><div class="label">Tom Mitchell’s definition</div>
+A computer program is said to learn from experience <strong>E</strong> with respect to some class of tasks <strong>T</strong> and performance measure <strong>P</strong>, if its performance at tasks in <strong>T</strong>, as measured by <strong>P</strong>, improves with experience <strong>E</strong>.
+</div>
+<p>Arthur Samuel described machine learning as the field of study that gives computers the ability to learn without being explicitly programmed. Both definitions emphasize improvement from experience.</p>
+<h3>1.2 Conventional programming versus machine learning</h3>
+<table><tr><th>Conventional programming</th><th>Machine learning</th></tr>
+<tr><td>Programmer writes explicit rules.</td><td>Algorithm learns a model from examples.</td></tr>
+<tr><td>Input data and rules produce output.</td><td>Training data and learning algorithm produce a model; the model predicts outputs for new inputs.</td></tr>
+<tr><td>Useful when rules are known and stable.</td><td>Useful when patterns are complex or difficult to specify manually.</td></tr>
+</table>
+<div class="example"><div class="label">Example – Email spam detection</div>
+In a rule-based program, a programmer may manually write rules such as “if the subject contains a particular suspicious phrase, mark the email as spam.” Such rules can be brittle. In an ML approach, the system is trained on emails labelled <em>spam</em> or <em>not spam</em>. It learns statistical patterns from the examples and predicts the class of a new email. The learned model may use word frequencies, sender information and other relevant features.
+</div>
+<h3>1.3 How does machine learning work?</h3>
+<ol>
+<li><strong>Collect experience:</strong> obtain examples, observations, feedback or interaction records.</li>
+<li><strong>Represent the problem:</strong> decide which input features and target output are relevant.</li>
+<li><strong>Choose a learning algorithm:</strong> select a procedure suitable for the task and data.</li>
+<li><strong>Train the model:</strong> use the experience to estimate the model parameters or rules.</li>
+<li><strong>Evaluate:</strong> test performance on examples not used for fitting.</li>
+<li><strong>Use and monitor:</strong> apply the model and check whether its performance remains satisfactory.</li>
+</ol>
+<h3>1.4 Features, need and applications</h3>
+<ul>
+<li>ML identifies patterns and relationships in data.</li>
+<li>It can improve through additional relevant experience.</li>
+<li>It supports prediction, classification, ranking, recommendation and decision-making.</li>
+<li>It can analyze volumes of information that are difficult to inspect manually.</li>
+</ul>
+<table><tr><th>Application</th><th>Possible input data</th><th>Possible ML task</th></tr>
+<tr><td>Healthcare</td><td>Clinical measurements, medical images, laboratory results</td><td>Risk classification or image classification</td></tr>
+<tr><td>Sports analytics</td><td>Player statistics, match events, fitness measurements</td><td>Performance prediction or player grouping</td></tr>
+<tr><td>Banking</td><td>Transaction amount, time, location, account history</td><td>Fraud detection</td></tr>
+<tr><td>Education</td><td>Attendance, assessment scores, learning activity</td><td>Identify students who may need academic support</td></tr>
+<tr><td>Transport</td><td>GPS, speed, traffic density</td><td>Travel-time prediction</td></tr>
+</table>
+<h3>1.5 Main types of machine learning</h3>
+<h4>A. Supervised learning</h4>
+<p>The learner receives labelled examples: each input is paired with its expected output. The goal is to learn a mapping from inputs to outputs.</p>
+<ul><li><strong>Classification:</strong> predicts a category, such as spam/not spam or benign/malignant in a labelled medical dataset.</li><li><strong>Regression:</strong> predicts a numerical value, such as house price or expected running time.</li></ul>
+<div class="example"><div class="label">Sports example – Predicting match outcome</div>
+Input features might include a team's recent win percentage, home/away status and player availability. The label is the historical match outcome: win, loss or draw. A supervised classifier learns from past labelled matches. It does not guarantee the outcome of a future match; it estimates a prediction from the training patterns.
+</div>
+<h4>B. Unsupervised learning</h4>
+<p>The learner receives data without target labels. It attempts to discover structure, groups or useful representations in the data.</p>
+<ul><li><strong>Clustering:</strong> groups similar examples.</li><li><strong>Dimensionality reduction:</strong> represents data using fewer variables while retaining useful structure.</li></ul>
+<div class="example"><div class="label">Healthcare example – Grouping patient profiles</div>
+A dataset containing age, blood pressure and other approved clinical measurements may be grouped to explore patterns. The algorithm is not told the correct group for each patient. The resulting clusters are exploratory patterns, not medical diagnoses.
+</div>
+<h4>C. Reinforcement learning</h4>
+<p>An agent interacts with an environment, takes actions and receives rewards or penalties. It learns a policy for choosing actions so as to maximize cumulative reward.</p>
+<div class="example"><div class="label">Sports example – Learning to play a game</div>
+An agent observes a game state, selects a move and receives feedback based on the outcome. Winning may provide a positive reward, losing a negative reward, and a draw a neutral reward. Through repeated play, the agent improves its action-selection strategy.
+</div>
+<table><tr><th>Type</th><th>Training feedback</th><th>Typical objective</th></tr>
+<tr><td>Supervised</td><td>Correct output/label supplied</td><td>Predict the target for new inputs</td></tr>
+<tr><td>Unsupervised</td><td>No target labels supplied</td><td>Discover structure or patterns</td></tr>
+<tr><td>Reinforcement</td><td>Rewards or penalties from interaction</td><td>Learn actions that maximize cumulative reward</td></tr>
+</table>
+<div class="activity"><div class="label">Classroom check</div>
+Classify each task as supervised, unsupervised or reinforcement learning:
+<ol><li>Predicting whether an email is spam using labelled emails.</li><li>Grouping customers by purchasing behaviour without preassigned groups.</li><li>A game-playing agent improving through rewards after moves.</li></ol>
+<strong>Answers:</strong> 1. Supervised; 2. Unsupervised; 3. Reinforcement.
+</div>
+</section>
+
+<section id="wellposed">
+<h2>2. Well-Posed Learning Problems</h2>
+<h3>2.1 The T–P–E framework</h3>
+<p>Tom Mitchell formalizes a learning problem using three elements:</p>
+<div class="formula"><strong>T</strong> = Task &nbsp;&nbsp; <strong>P</strong> = Performance measure &nbsp;&nbsp; <strong>E</strong> = Experience</div>
+<p>A learning problem is well-posed when the task, the way performance is measured and the source of experience are clearly specified.</p>
+<h3>2.2 Example 1 – Checkers-playing program</h3>
+<table><tr><th>Element</th><th>Description</th></tr>
+<tr><td>Task (T)</td><td>Playing checkers.</td></tr>
+<tr><td>Performance (P)</td><td>Percentage of games won against opponents or in a specified tournament.</td></tr>
+<tr><td>Experience (E)</td><td>Practice games, including games played against itself.</td></tr></table>
+<p>Explain that “playing checkers” alone is not a complete learning-problem definition. We must also say how success is measured and what experience is available.</p>
+<h3>2.3 Example 2 – Handwriting recognition</h3>
+<table><tr><th>Element</th><th>Description</th></tr>
+<tr><td>T</td><td>Recognizing and classifying handwritten words in images.</td></tr>
+<tr><td>P</td><td>Percentage of words correctly classified.</td></tr>
+<tr><td>E</td><td>A collection of handwriting images with their correct transcriptions or labels.</td></tr></table>
+<h3>2.4 Example 3 – Medical image classification</h3>
+<table><tr><th>Element</th><th>Description</th></tr>
+<tr><td>T</td><td>Classifying images into categories defined by a validated dataset, such as benign or malignant.</td></tr>
+<tr><td>P</td><td>Appropriate held-out evaluation measures, such as sensitivity, specificity and accuracy.</td></tr>
+<tr><td>E</td><td>Images with labels established through an appropriate clinical reference process.</td></tr></table>
+<div class="warning"><div class="label">Important distinction</div>
+A classroom ML example is not a clinical diagnostic tool. Medical predictions require validated data, careful evaluation, clinical oversight and appropriate privacy protection.
+</div>
+<h3>2.5 Worked exercise – Define T, P and E</h3>
+<p><strong>Problem:</strong> A university wants to develop a model that identifies students who may need additional academic support.</p>
+<ul>
+<li><strong>T:</strong> Classify whether a student may need additional academic support, based on the defined target label.</li>
+<li><strong>P:</strong> Evaluate using a held-out dataset and suitable measures such as recall, precision and F1-score.</li>
+<li><strong>E:</strong> Historical, appropriately governed student records and assessment outcomes.</li>
+</ul>
+<p>Discuss why attendance alone may be insufficient: the experience should represent relevant factors, and the target label must be defined carefully.</p>
+</section>
+
+<section id="design">
+<h2>3. Designing a Learning System</h2>
+<p>Mitchell presents the design of a learning system as a sequence of important choices. The checkers example illustrates these choices.</p>
+<h3>3.1 Choosing the training experience</h3>
+<p>The training experience has a strong influence on what the learner can acquire. It should be relevant to the task and representative of the situations in which the model will be used.</p>
+<p>Three useful considerations from the textbook discussion are:</p>
+<ol><li><strong>Type of feedback:</strong> direct feedback supplies the correct action or output for an individual case; indirect feedback may provide only the outcome after a sequence of actions.</li><li><strong>Degree of control:</strong> consider whether a teacher selects examples or the learner proposes cases and requests feedback.</li><li><strong>Distribution of examples:</strong> training examples should represent the situations on which performance will later be evaluated.</li></ol>
+<div class="example"><div class="label">Checkers illustration</div>
+Direct experience: the learner is shown a board position and the correct move. Indirect experience: the learner plays a complete game and receives the final result. If the learner only plays against itself, it may fail to encounter important strategies used by strong human opponents.
+</div>
+<h3>3.2 Choosing the target function</h3>
+<p>The target function describes what the program must learn to predict. In the checkers example, the program can already generate legal moves; it needs to learn how desirable a board position is.</p>
+<p>Mitchell denotes the target function by \(V:B\rightarrow R\), where \(B\) is the set of legal board states and \(R\) is the set of real-valued scores.</p>
+<table><tr><th>Board state</th><th>Target value</th></tr>
+<tr><td>Final state – win</td><td>+100</td></tr>
+<tr><td>Final state – loss</td><td>−100</td></tr>
+<tr><td>Final state – draw</td><td>0</td></tr>
+<tr><td>Non-final state</td><td>Estimated value based on the best final state reachable under optimal play</td></tr></table>
+<h3>3.3 Choosing a representation for the target function</h3>
+<p>A simple representation is a linear combination of board features:</p>
+<div class="formula">\(\hat V(b)=w_0+w_1x_1+w_2x_2+\cdots+w_6x_6\)</div>
+<p>In the textbook's checkers illustration, the features include:</p>
+<ul><li>\(x_1\): number of black pieces</li><li>\(x_2\): number of red pieces</li><li>\(x_3\): number of black kings</li><li>\(x_4\): number of red kings</li><li>\(x_5\): number of black pieces threatened by red</li><li>\(x_6\): number of red pieces threatened by black</li></ul>
+<p>The weights \(w_0,w_1,\ldots,w_6\) determine the contribution of each feature. The constant \(w_0\) is the bias or additive constant.</p>
+<h3>3.4 Numerical example – Evaluating a board state</h3>
+<p>For practice, suppose a learned evaluation function has the following illustrative weights:</p>
+<div class="formula">\(\hat V(b)=0+2x_1-2x_2+5x_3-5x_4-x_5+x_6\)</div>
+<p>For a board with \(x_1=8,x_2=7,x_3=2,x_4=1,x_5=1,x_6=2\):</p>
+<div class="formula">\(\hat V(b)=2(8)-2(7)+5(2)-5(1)-1+2\)<br>\(=16-14+10-5-1+2=8\)</div>
+<p>The predicted board value is <strong>8</strong>. This is an illustrative calculation to demonstrate the linear representation; the weights are not claimed to be Mitchell's trained values.</p>
+<h3>3.5 Choosing a function approximation algorithm</h3>
+<p>The learning algorithm estimates the parameters of the chosen representation from training values. One approach is to select weights that minimize squared error between target values and predictions:</p>
+<div class="formula">\(E=\sum_i (V_{train}(b_i)-\hat V(b_i))^2\)</div>
+<p>Mitchell discusses the Least Mean Squares (LMS) training rule as an incremental method for adjusting weights as training examples become available.</p>
+<h3>3.6 The final design – Four modules</h3>
+<table><tr><th>Module</th><th>Role in the checkers system</th></tr>
+<tr><td>Performance system</td><td>Plays the game using the current learned evaluation function.</td></tr>
+<tr><td>Critic</td><td>Examines the game history and produces training examples or target values.</td></tr>
+<tr><td>Generalizer</td><td>Uses training examples to improve the estimated target function; in the example, LMS adjusts the weights.</td></tr>
+<tr><td>Experiment generator</td><td>Suggests a new problem or starting situation for the performance system to explore.</td></tr></table>
+<div class="board"><div class="label">Board summary – Learning system design</div>
+Training experience → Target function → Representation → Function approximation algorithm → Learned model<br><br>
+The four operational modules: Performance System · Critic · Generalizer · Experiment Generator.
+</div>
+</section>
+
+<section id="issues">
+<h2>4. Perspectives and Issues in Machine Learning</h2>
+<p>Machine learning involves several design decisions. The quality of a learned model depends not only on the algorithm but also on the training experience, target definition, feature representation and evaluation method.</p>
+<h3>4.1 Important issues to discuss</h3>
+<ul>
+<li><strong>Choice of training data:</strong> Is it representative of future cases?</li>
+<li><strong>Quality of labels:</strong> Are the target outputs accurate and consistently assigned?</li>
+<li><strong>Feature selection:</strong> Do the chosen attributes contain useful information?</li>
+<li><strong>Generalization:</strong> Does the model perform well on unseen examples, not merely the training set?</li>
+<li><strong>Overfitting:</strong> Has the model memorized training-specific details instead of learning useful patterns?</li>
+<li><strong>Evaluation:</strong> Is the selected performance measure appropriate for the problem?</li>
+<li><strong>Ethics and privacy:</strong> Is data collected and used appropriately? Could predictions create unfair outcomes?</li>
+</ul>
+<div class="example"><div class="label">Cancer-classification illustration</div>
+Suppose a teaching dataset contains measurements from medical images and a target label. If nearly all training examples come from one scanner or one hospital, a model may learn scanner-specific patterns. It may perform less well on images from another source. This illustrates why representative training and independent evaluation matter. The example is for understanding ML methodology, not for clinical decision-making.
+</div>
+</section>
+
+<section id="concept">
+<h2>5. Concept Learning and the General-to-Specific Ordering</h2>
+<h3>5.1 What is concept learning?</h3>
+<p>Much of learning involves acquiring general concepts from specific examples. Concept learning is the task of inferring a Boolean-valued function from training examples of its inputs and outputs.</p>
+<p>A concept identifies a subset of objects or events. For example, the concept “sports days on which a person enjoys playing” divides all possible days into positive and negative examples.</p>
+<h3>5.2 The EnjoySport task (Mitchell's running example)</h3>
+<p>Mitchell uses the task of learning the days on which a person, Aldo, enjoys his favourite water sport. Each day is represented by six attributes:</p>
+<table><tr><th>Attribute</th><th>Possible values in the example</th></tr>
+<tr><td>Sky</td><td>Sunny, Cloudy, Rainy</td></tr>
+<tr><td>AirTemp</td><td>Warm, Cold</td></tr>
+<tr><td>Humidity</td><td>Normal, High</td></tr>
+<tr><td>Wind</td><td>Strong, Weak</td></tr>
+<tr><td>Water</td><td>Warm, Cool</td></tr>
+<tr><td>Forecast</td><td>Same, Change</td></tr></table>
+<p>The target attribute is <strong>EnjoySport</strong>, whose value is Yes or No.</p>
+<h3>5.3 Hypothesis representation</h3>
+<p>A hypothesis is represented as a vector of six constraints, one for each attribute. A specific value means that the attribute must have that value. The symbol <strong>?</strong> means any value is acceptable. The symbol <strong>Ø</strong> means no value is acceptable for that attribute, producing the most specific or empty hypothesis in this representation.</p>
+<table><tr><th>Hypothesis</th><th>Meaning</th></tr>
+<tr><td>(Sunny, Warm, ?, Strong, ?, ?)</td><td>Sunny days, warm air and strong wind; other attributes may take any value.</td></tr>
+<tr><td>(?, ?, ?, ?, ?, ?)</td><td>Most general hypothesis: every instance is classified positive.</td></tr>
+<tr><td>(Ø, Ø, Ø, Ø, Ø, Ø)</td><td>Most specific hypothesis: no instance is classified positive.</td></tr></table>
+<div class="info"><div class="label">Important notation</div>
+A hypothesis classifies an instance as positive when the instance satisfies all constraints in the hypothesis. A positive training example has target value Yes; a negative example has target value No.
+</div>
+</section>
+
+<section id="notation">
+<h2>6. Formal Notation for Concept Learning</h2>
+<table><tr><th>Symbol</th><th>Meaning</th></tr>
+<tr><td>\(X\)</td><td>Set of all possible instances.</td></tr>
+<tr><td>\(c\)</td><td>Target concept to be learned; a Boolean function over \(X\).</td></tr>
+<tr><td>\(D\)</td><td>Available training examples, each represented as \((x,c(x))\).</td></tr>
+<tr><td>\(H\)</td><td>Set of hypotheses the learner may consider.</td></tr>
+<tr><td>\(h\in H\)</td><td>A candidate hypothesis.</td></tr>
+</table>
+<p>For a Boolean concept:</p>
+<div class="formula">\(c:X\rightarrow\{0,1\},\qquad h:X\rightarrow\{0,1\}\)</div>
+<p>The goal is to find a hypothesis \(h\) that approximates the target concept \(c\), including on instances not present in the training data.</p>
+<h3>6.1 Instance-space calculation</h3>
+<p>In EnjoySport, Sky has 3 possible values and each of the other five attributes has 2 values. Therefore, the number of possible instances is:</p>
+<div class="formula">\(|X|=3\times2\times2\times2\times2\times2=96\)</div>
+<p>There are 96 possible days under this attribute representation.</p>
+<h3>6.2 Hypothesis-space calculation</h3>
+<p>For an attribute with \(k\) possible values, the hypothesis representation permits each of those values, the wildcard ?, and the most-specific constraint Ø. Therefore, the number of syntactically distinct hypotheses is:</p>
+<div class="formula">\(|H|=(3+2)\times(2+2)^5=5\times4^5=5120\)</div>
+<p>However, any hypothesis containing at least one Ø represents the empty set of positive instances in this conjunctive representation. Mitchell notes that the number of semantically distinct hypotheses is:</p>
+<div class="formula">\(|H_{semantic}|=1+(3+1)(2+1)^5=1+4\times243=973\)</div>
+<p class="small">The count includes one empty-set hypothesis plus the non-empty conjunctions: four choices for Sky (three values or ?) and three choices for each of the other five attributes (two values or ?).</p>
+<div class="takeaway">
+<div class="label">Key point</div>
+The syntactic count includes different written forms, while the semantic count merges hypotheses that make the same classification. This distinction is important when counting the hypothesis space.
+</div>
+<h3 class="subsection-heading">6.3 Inductive learning hypothesis</h3>
+<p>The inductive learning hypothesis states that if a hypothesis approximates the target function well over a sufficiently large set of training examples, it will also approximate the target function well over other unobserved examples. This is the assumption that allows learning from a finite sample to generalize.</p>
+</section>
+
+<section id="search">
+<h2>7. Concept Learning as Search</h2>
+<p>Concept learning can be viewed as a search through the hypothesis space \(H\). The learner examines possible hypotheses and seeks one that is consistent with the observed training examples.</p>
+<h3>7.1 Small numerical illustration</h3>
+<p>Suppose there are two attributes:</p>
+<ul><li>F1 has values A or B.</li><li>F2 has values X or Y.</li></ul>
+<p>The instance space contains:</p>
+<div class="formula">\(X=\{(A,X),(A,Y),(B,X),(B,Y)\}\)</div>
+<p>There are four possible instances. In a conjunctive hypothesis representation, each attribute can be constrained to one of its values or left as ?. Thus the non-empty hypotheses are:</p>
+<table><tr><th>F1 constraint</th><th>F2 constraint</th><th>Hypothesis</th></tr>
+<tr><td>A</td><td>X</td><td>(A, X)</td></tr><tr><td>A</td><td>Y</td><td>(A, Y)</td></tr>
+<tr><td>A</td><td>?</td><td>(A, ?)</td></tr><tr><td>B</td><td>X</td><td>(B, X)</td></tr>
+<tr><td>B</td><td>Y</td><td>(B, Y)</td></tr><tr><td>B</td><td>?</td><td>(B, ?)</td></tr>
+<tr><td>?</td><td>X</td><td>(?, X)</td></tr><tr><td>?</td><td>Y</td><td>(?, Y)</td></tr>
+<tr><td>?</td><td>?</td><td>(?, ?)</td></tr></table>
+<p>There are nine non-empty hypotheses. Adding the single empty-set hypothesis gives ten semantically distinct hypotheses. The number of syntactic representations is \(4\times4=16\) if Ø is also allowed independently in each coordinate; several of these represent the same empty set.</p>
+<div class="activity"><div class="label">Try it</div>
+If the only positive training example is (A, X), list two hypotheses that cover it. Possible answers include (A, X), (A, ?), (?, X) and (?, ?). Discuss why one example does not determine a unique target concept.
+</div>
+</section>
+
+<section id="ordering">
+<h2>8. General-to-Specific Ordering of Hypotheses</h2>
+<p>Hypotheses can be organized according to how many instances they classify as positive. A hypothesis with fewer constraints is generally more general because it accepts more instances.</p>
+<h3>8.1 Example</h3>
+<p>Consider:</p>
+<div class="formula">\(h_1=(Sunny, ?, ?, Strong, ?, ?)\)<br>\(h_2=(Sunny, ?, ?, ?, ?, ?)\)</div>
+<p>\(h_2\) is more general than \(h_1\), because it does not require Wind = Strong. Every instance accepted by \(h_1\) is also accepted by \(h_2\), but \(h_2\) accepts additional instances.</p>
+<h3>8.2 Formal relation</h3>
+<p>We say \(h_j\) is at least as general as \(h_k\) if every instance classified positive by \(h_k\) is also classified positive by \(h_j\).</p>
+<div class="formula">\(h_j\geq_g h_k\quad\text{if and only if}\quad\forall x\in X,\; h_k(x)=1\Rightarrow h_j(x)=1\)</div>
+<p>The relation is a <strong>partial order</strong>: it is reflexive, antisymmetric and transitive. It is not necessarily a total order because two hypotheses may be incomparable.</p>
+<div class="example"><div class="label">Incomparable hypotheses</div>
+\(h_a=(Sunny, ?, ?, ?, ?, ?)\) and \(h_b=(?, Warm, ?, ?, ?, ?)\). One requires Sunny weather; the other requires Warm air. Some days satisfy both, but neither hypothesis includes all instances covered by the other. Therefore, neither is more general than the other.
+</div>
+<div class="board"><div class="label">Remember</div>
+More general = fewer restrictions = covers more instances.<br>
+More specific = more restrictions = covers fewer instances.
+</div>
+</section>
+
+<section id="finds">
+<h2>9. Find-S: Finding a Maximally Specific Hypothesis</h2>
+<h3>9.1 Basic idea</h3>
+<p>Find-S begins with the most specific hypothesis and generalizes it only when it encounters a positive training example. It ignores negative examples.</p>
+<h3>9.2 Algorithm steps</h3>
+<ol>
+<li>Initialize \(h\) to the most specific hypothesis.</li>
+<li>For each positive training example, compare its attribute values with the current hypothesis.</li>
+<li>If a constraint does not match the positive example, replace that constraint with ?.</li>
+<li>Ignore negative examples.</li>
+<li>Return the final hypothesis.</li>
+</ol>
+<h3>9.3 Worked numerical example – EnjoySport</h3>
+<p>Use the standard four-example EnjoySport training sequence discussed in Mitchell:</p>
+<table><tr><th>Example</th><th>Sky</th><th>AirTemp</th><th>Humidity</th><th>Wind</th><th>Water</th><th>Forecast</th><th>EnjoySport</th></tr>
+<tr><td>1</td><td>Sunny</td><td>Warm</td><td>Normal</td><td>Strong</td><td>Warm</td><td>Same</td><td>Yes</td></tr>
+<tr><td>2</td><td>Sunny</td><td>Warm</td><td>High</td><td>Strong</td><td>Warm</td><td>Same</td><td>Yes</td></tr>
+<tr><td>3</td><td>Rainy</td><td>Cold</td><td>High</td><td>Strong</td><td>Warm</td><td>Change</td><td>No</td></tr>
+<tr><td>4</td><td>Sunny</td><td>Warm</td><td>High</td><td>Strong</td><td>Cool</td><td>Change</td><td>Yes</td></tr></table>
+<p><strong>Initialization:</strong></p>
+<div class="formula">\(h_0=(Ø,Ø,Ø,Ø,Ø,Ø)\)</div>
+<p><strong>After Example 1 (positive):</strong> replace the most-specific constraints with the values in the example.</p>
+<div class="formula">\(h_1=(Sunny,Warm,Normal,Strong,Warm,Same)\)</div>
+<p><strong>After Example 2 (positive):</strong> Humidity differs (Normal versus High), so generalize that position to ?.</p>
+<div class="formula">\(h_2=(Sunny,Warm,?,Strong,Warm,Same)\)</div>
+<p><strong>After Example 3 (negative):</strong> Find-S ignores negative examples. No change.</p>
+<div class="formula">\(h_3=(Sunny,Warm,?,Strong,Warm,Same)\)</div>
+<p><strong>After Example 4 (positive):</strong> Water differs (Warm versus Cool), and Forecast differs (Same versus Change). Generalize both positions.</p>
+<div class="formula">\(h_4=(Sunny,Warm,?,Strong,?,?)\)</div>
+<div class="takeaway"><div class="label">Final Find-S hypothesis</div>
+\(\boxed{(Sunny,Warm,?,Strong,?,?)}\)<br>
+The learned hypothesis says that the positive examples observed are covered by the conditions Sunny sky, Warm air and Strong wind; humidity, water and forecast are unrestricted.
+</div>
+<h3>9.4 Limitations of Find-S</h3>
+<ul>
+<li>It ignores negative examples.</li>
+<li>It returns one hypothesis and does not describe all consistent hypotheses.</li>
+<li>It cannot determine from its output alone whether the target concept has been found.</li>
+<li>It is sensitive to inconsistent or noisy positive examples.</li>
+<li>It does not backtrack or maintain alternative hypotheses.</li>
+</ul>
+<div class="activity"><div class="label">Quick question</div>
+Why does Find-S replace an attribute constraint with ? after seeing two positive examples that disagree on that attribute?<br>
+<strong>Answer:</strong> Because the final hypothesis must cover both positive examples; ? means that either attribute value is acceptable.
+</div>
+</section>
+
+<section id="version">
+<h2>10. Version Spaces</h2>
+<h3>10.1 Meaning</h3>
+<p>Find-S returns one hypothesis consistent with the positive examples it processes. However, many hypotheses may be consistent with all observed training examples. The <strong>version space</strong> is the set of all hypotheses in \(H\) that are consistent with the training data \(D\).</p>
+<div class="formula">\(VS_{H,D}=\{h\in H\mid Consistent(h,D)\}\)</div>
+<p>A hypothesis is consistent when it correctly classifies every training example in the dataset.</p>
+<h3>10.2 List-Then-Eliminate algorithm</h3>
+<ol>
+<li>Initialize the version space with every hypothesis in \(H\).</li>
+<li>Read a training example.</li>
+<li>Remove every hypothesis that predicts a different target value from the example.</li>
+<li>Repeat for all examples.</li>
+<li>The remaining hypotheses form the version space.</li>
+</ol>
+<p>This method is conceptually straightforward for a finite hypothesis space, but explicitly listing every hypothesis may be computationally expensive when \(H\) is large.</p>
+<h3>10.3 Simple worked example</h3>
+<p>Consider two binary attributes F1 ∈ {A,B} and F2 ∈ {X,Y}. Suppose the training data are:</p>
+<table><tr><th>Instance</th><th>Target</th></tr><tr><td>(A, X)</td><td>Positive</td></tr><tr><td>(A, Y)</td><td>Negative</td></tr></table>
+<p>Some candidate hypotheses can be tested:</p>
+<table><tr><th>Hypothesis</th><th>Prediction on (A,X)</th><th>Prediction on (A,Y)</th><th>Consistent?</th></tr>
+<tr><td>(A, X)</td><td>Positive</td><td>Negative</td><td>Yes</td></tr>
+<tr><td>(A, ?)</td><td>Positive</td><td>Positive</td><td>No</td></tr>
+<tr><td>(?, X)</td><td>Positive</td><td>Negative</td><td>Yes</td></tr>
+<tr><td>(?, ?)</td><td>Positive</td><td>Positive</td><td>No</td></tr>
+<tr><td>(B, X)</td><td>Negative</td><td>Negative</td><td>No</td></tr></table>
+<p>Among these candidates, (A,X) and (?,X) remain consistent. The complete version space depends on the full hypothesis representation, but this small table demonstrates the elimination process.</p>
+</section>
+
+<section id="candidate">
+<h2>11. Candidate-Elimination Algorithm</h2>
+<h3>11.1 Main idea</h3>
+<p>Candidate-Elimination represents the version space compactly using two boundary sets:</p>
+<ul><li><strong>S boundary:</strong> the set of maximally specific hypotheses consistent with the training data.</li><li><strong>G boundary:</strong> the set of maximally general hypotheses consistent with the training data.</li></ul>
+<p>All hypotheses in the version space lie between the S and G boundaries under the general-to-specific ordering.</p>
+<div class="board"><div class="label">Boundary intuition</div>
+G = general boundary (upper boundary)<br>
+All consistent hypotheses lie between G and S<br>
+S = specific boundary (lower boundary)
+</div>
+<h3>11.2 Initialization</h3>
+<div class="formula">\(S_0=\{(Ø,Ø,\ldots,Ø)\}\qquad G_0=\{(?,?,\ldots,?)\}\)</div>
+<h3>11.3 Processing a positive example</h3>
+<ul><li>Remove from G any hypothesis that does not cover the positive example.</li><li>Generalize members of S minimally so that they cover the positive example.</li><li>Remove hypotheses from S that are more general than another member of S, and remove redundant hypotheses from G as required by the boundary representation.</li></ul>
+<h3>11.4 Processing a negative example</h3>
+<ul><li>Remove from S any hypothesis that covers the negative example.</li><li>Specialize members of G minimally so that they exclude the negative example while remaining at least as general as some member of S.</li><li>Remove redundant hypotheses from the boundaries.</li></ul>
+<h3>11.5 Small illustrative trace</h3>
+<p>Use a two-attribute hypothesis space with F1 ∈ {A,B} and F2 ∈ {X,Y}. Begin with:</p>
+<div class="formula">\(S_0=\{(Ø,Ø)\},\quad G_0=\{(?,?)\}\)</div>
+<p><strong>Example 1: (A,X) is positive.</strong> S must generalize to cover it; G already covers it.</p>
+<div class="formula">\(S_1=\{(A,X)\},\quad G_1=\{(?,?)\}\)</div>
+<p><strong>Example 2: (A,Y) is negative.</strong> S=(A,X) does not cover this negative instance, so it remains. G=(?,?) covers the negative instance and must be minimally specialized. One valid specialization is (?,X); another possible specialization is (B,?). Both exclude (A,Y) and remain general enough to cover S.</p>
+<div class="formula">\(S_2=\{(A,X)\},\quad G_2=\{(?,X),(B,?)\}\)</div>
+<p>This example shows why Candidate-Elimination can preserve multiple possible explanations rather than selecting only one.</p>
+<div class="warning"><div class="label">Assumption</div>
+Candidate-Elimination assumes that the training examples are correctly labelled and that the target concept can be represented in the chosen hypothesis space. With noisy or contradictory labels, the version space may become empty.
+</div>
+<h3>11.6 Find-S versus Candidate-Elimination</h3>
+<table><tr><th>Find-S</th><th>Candidate-Elimination</th></tr>
+<tr><td>Starts from the most specific hypothesis.</td><td>Maintains both specific and general boundaries.</td></tr>
+<tr><td>Uses positive examples; ignores negative examples.</td><td>Uses both positive and negative examples.</td></tr>
+<tr><td>Returns one maximally specific consistent hypothesis under its procedure.</td><td>Represents all consistent hypotheses through S and G boundaries.</td></tr>
+<tr><td>Does not represent the complete version space.</td><td>Tracks the version space compactly.</td></tr></table>
+</section>
+
+<section id="bias">
+<h2>12. Inductive Bias</h2>
+<h3>12.1 Why is inductive bias needed?</h3>
+<p>Training examples alone usually do not uniquely determine how every unseen instance should be classified. A learner therefore needs assumptions or preferences that guide generalization beyond the observed examples. These assumptions are called <strong>inductive bias</strong>.</p>
+<p>One might try to make a learner unbiased by including every possible concept in its hypothesis space. However, a learner that has no preference among possible hypotheses cannot make useful general predictions from limited data without some assumption about which hypotheses to prefer.</p>
+<h3>12.2 Types of bias – intuitive explanation</h3>
+<ul><li><strong>Restriction/representation bias:</strong> restricts the hypotheses the learner is allowed to represent.</li><li><strong>Preference bias:</strong> allows many hypotheses but prefers some over others, for example simpler hypotheses.</li></ul>
+<div class="example"><div class="label">Example</div>
+Suppose a learner is restricted to conjunctions of attribute constraints such as (Sunny, Warm, ?, ?, ?, ?). It cannot represent every possible Boolean concept over the instance space. This is a representation restriction. A different learner may allow a larger set of hypotheses but prefer simpler ones when several fit the data.
+</div>
+<h3>12.3 Why bias matters</h3>
+<p>Inductive bias makes generalization possible, but it can also limit what a learner can discover. If the true concept is outside the hypothesis space, the learner cannot represent it exactly. If the bias is suitable for the problem, it can reduce search and improve generalization.</p>
+</section>
+
+<section id="practice">
+<h2>13. Solved Practice Problems and Classroom Activities</h2>
+<h3>Problem 1 – Identify T, P and E</h3>
+<p>A model learns to predict the time required to complete a 5 km run using a runner's previous training records.</p>
+<p><strong>Solution:</strong></p>
+<ul><li>T: Predict 5 km completion time.</li><li>P: Mean absolute error or another suitable regression error on unseen runners/runs.</li><li>E: Historical training records with relevant features and recorded completion times.</li></ul>
+<h3>Problem 2 – Instance-space size</h3>
+<p>Suppose a concept has three attributes: Surface = {Grass, Clay}, Weather = {Sunny, Rainy, Cloudy}, and Match = {Singles, Doubles}. How many instances are possible?</p>
+<div class="formula">\(|X|=2\times3\times2=12\)</div>
+<p><strong>Answer:</strong> 12 possible instances.</p>
+<h3>Problem 3 – General or specific?</h3>
+<p>Compare \(h_1=(Sunny, Warm, ?, Strong)\) and \(h_2=(Sunny, ?, ?, ?)\).</p>
+<p><strong>Answer:</strong> \(h_2\) is more general because it has fewer restrictions. Every instance satisfying \(h_1\) also satisfies \(h_2\).</p>
+<h3>Problem 4 – Find-S practice</h3>
+<p>Use three attributes: Surface, Weather and Wind. Training examples:</p>
+<table><tr><th>Example</th><th>Surface</th><th>Weather</th><th>Wind</th><th>EnjoyPlay</th></tr>
+<tr><td>1</td><td>Grass</td><td>Sunny</td><td>Light</td><td>Yes</td></tr>
+<tr><td>2</td><td>Grass</td><td>Cloudy</td><td>Light</td><td>Yes</td></tr>
+<tr><td>3</td><td>Clay</td><td>Rainy</td><td>Strong</td><td>No</td></tr>
+<tr><td>4</td><td>Grass</td><td>Sunny</td><td>Strong</td><td>Yes</td></tr></table>
+<p>Trace:</p>
+<div class="formula">After E1: (Grass, Sunny, Light)<br>After E2: (Grass, ?, Light)<br>After E3: no change (negative example ignored)<br>After E4: (Grass, ?, ?)</div>
+<p><strong>Final hypothesis:</strong> (Grass, ?, ?).</p>
+<h3>Problem 5 – Medical classification discussion</h3>
+<p>A teaching dataset contains 200 labelled images: 100 benign and 100 malignant. Ask students:</p>
+<ol><li>Is this supervised or unsupervised learning?</li><li>What is an instance?</li><li>What is the target label?</li><li>Why should evaluation use images not used for training?</li></ol>
+<p><strong>Suggested answers:</strong> Supervised learning; one image with its recorded features; benign/malignant label; a separate test set estimates generalization to unseen cases. This is a methodological exercise, not a diagnostic recommendation.</p>
+<div class="activity"><div class="label">Group activity – Sports concept learning</div>
+Ask groups to define a Boolean target concept such as “conditions under which a team chooses to play outdoors.” Let them choose 3–5 attributes, create positive and negative examples, and write one candidate hypothesis. Ask another group to identify a new example that distinguishes between two competing hypotheses.
+</div>
+</section>
+
+<section id="revision">
+<h2>14. Unit I – Key Takeaways</h2>
+<ul>
+<li>Machine learning studies how programs improve through experience.</li>
+<li>A well-posed learning problem specifies T, P and E.</li>
+<li>Designing a learning system requires decisions about training experience, target function, representation and approximation algorithm.</li>
+<li>Supervised learning uses labelled examples; unsupervised learning discovers structure without target labels; reinforcement learning uses rewards from interaction.</li>
+<li>Concept learning infers a Boolean target concept from labelled examples.</li>
+<li>The hypothesis space contains the candidate concepts the learner can represent.</li>
+<li>More general hypotheses cover more instances; more specific hypotheses cover fewer.</li>
+<li>Find-S generalizes from positive examples and ignores negative examples.</li>
+<li>Version space contains all hypotheses consistent with the observed data.</li>
+<li>Candidate-Elimination represents the version space using S and G boundaries.</li>
+<li>Inductive bias provides assumptions or preferences that guide generalization.</li>
+</ul>
+<h2>15. Important Examination Questions</h2>
+<h3>Short-answer questions</h3>
+<ol>
+<li>Define machine learning. State Arthur Samuel's description.</li>
+<li>Define Task, Performance measure and Experience.</li>
+<li>Differentiate supervised, unsupervised and reinforcement learning.</li>
+<li>What is a target function?</li>
+<li>Define instance space and hypothesis space.</li>
+<li>What is a positive example and a negative example?</li>
+<li>Define the general-to-specific ordering.</li>
+<li>What is a version space?</li>
+<li>What are the S and G boundaries?</li>
+<li>Define inductive bias.</li>
+</ol>
+<h3>Long-answer questions</h3>
+<ol>
+<li>Explain a well-posed learning problem with the checkers example.</li>
+<li>Describe the steps involved in designing a learning system according to Tom Mitchell.</li>
+<li>Explain the four modules of a learning system with a neat diagram.</li>
+<li>Explain concept learning and the EnjoySport task with suitable notation.</li>
+<li>Explain hypothesis-space search and the general-to-specific ordering.</li>
+<li>Describe the Find-S algorithm and trace it using the EnjoySport training examples.</li>
+<li>Explain version spaces and the List-Then-Eliminate algorithm.</li>
+<li>Explain Candidate-Elimination with S and G boundaries and a worked example.</li>
+<li>Discuss the need for inductive bias in concept learning.</li>
+<li>Compare Find-S and Candidate-Elimination.</li>
+</ol>
+<h3>Numerical/problem-oriented questions</h3>
+<ol>
+<li>Calculate the size of an instance space when attribute domains are specified.</li>
+<li>Calculate the number of syntactically and semantically distinct hypotheses for a given conjunctive representation.</li>
+<li>Trace Find-S over a supplied set of positive and negative examples.</li>
+<li>Update the S and G boundaries after a sequence of positive and negative examples.</li>
+<li>Identify whether two hypotheses are ordered or incomparable under the general-to-specific relation.</li>
+</ol>
+<div class="takeaway"><div class="label">Final teaching message</div>
+The central idea of Unit I is that a learning system uses experience to construct a model, but successful learning requires a clearly defined task, a suitable representation, representative examples and assumptions that support generalization. Concept learning makes this idea precise by searching a hypothesis space and maintaining explanations consistent with observed examples.
+</div>
+</section>
+</main>
+</div>
+
+</div>
+</body>
+</html>

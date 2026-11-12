@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine Learning – Unit III Lecture Notes</title>
+<script>
+  window.MathJax = { tex: {inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']]}, svg: {fontCache: 'global'} };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{--navy:#17365d;--blue:#245b8f;--teal:#087e8b;--ink:#202a35;--muted:#5d6b78;--line:#d8e1eb;--pale:#eef5fb;--paper:#fff;--green:#eaf6ee;--amber:#fff6df}
+*{box-sizing:border-box}
+body{margin:0;background:#edf1f5;color:var(--ink);font-family:"Times New Roman",serif;font-size:17px;line-height:1.58}
+.shell{max-width:1120px;margin:24px auto;background:var(--paper);box-shadow:0 8px 28px #1c35501a;display:grid;grid-template-columns:245px minmax(0,1fr)}
+nav{background:#f5f8fb;border-right:1px solid var(--line);padding:24px 18px;position:sticky;top:0;height:100vh;overflow:auto}
+nav h2{font-size:20px;color:var(--navy);margin:0 0 12px}
+nav a{display:block;color:#294b6b;text-decoration:none;padding:5px 8px;border-radius:5px;font-size:15px}
+nav a:hover{background:#e5eef7}
+main{padding:42px 54px 60px;min-width:0}
+.cover{padding:26px 28px;border:1px solid var(--line);border-top:6px solid var(--navy);background:linear-gradient(135deg,#f7fbff,#fff);margin-bottom:30px}
+.kicker{color:var(--teal);font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;font-size:13px}
+h1{font-size:34px;color:var(--navy);line-height:1.15;margin:8px 0}
+.subtitle{font-size:19px;color:var(--muted)}
+h2{font-size:27px;color:var(--navy);border-bottom:2px solid var(--line);padding-bottom:7px;margin:42px 0 16px}
+h3{font-size:21px;color:var(--blue);margin:27px 0 8px}
+h4{font-size:18px;color:#315b72;margin:18px 0 6px}
+p{margin:9px 0 13px}
+ul,ol{padding-left:26px}
+li{margin:5px 0}
+.equation{background:#f6f9fc;border-left:4px solid var(--teal);padding:12px 18px;margin:15px 0;overflow-x:auto}
+.callout{background:var(--pale);border:1px solid #d6e5f3;border-radius:8px;padding:13px 17px;margin:16px 0}
+.example{background:#fbfcfe;border:1px solid var(--line);border-radius:8px;padding:15px 18px;margin:16px 0}
+.example strong{color:var(--navy)}
+.note{background:var(--amber);border-left:4px solid #d69b20;padding:12px 16px;margin:16px 0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:16px}
+th,td{border:1px solid #ccd7e2;padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#eaf1f8;color:#183b60}
+caption{caption-side:top;text-align:left;font-weight:bold;color:var(--navy);padding:5px}
+.small{font-size:15px;color:var(--muted)}
+.diagram{background:#fbfdff;border:1px solid var(--line);border-radius:8px;padding:12px;margin:16px 0;text-align:center;overflow-x:auto}
+.diagram svg{max-width:100%;height:auto}
+.steps{counter-reset:step;list-style:none;padding:0}
+.steps li{counter-increment:step;padding:8px 10px 8px 48px;position:relative;border-bottom:1px dashed var(--line)}
+.steps li:before{content:counter(step);position:absolute;left:7px;top:7px;background:var(--navy);color:white;border-radius:50%;width:27px;height:27px;text-align:center;line-height:27px;font-weight:bold}
+hr{border:0;border-top:1px solid var(--line);margin:30px 0}
+button{background:var(--navy);color:white;border:0;border-radius:6px;padding:9px 14px;cursor:pointer;font-family:inherit;font-size:15px}
+@media(max-width:850px){.shell{display:block;margin:0}nav{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:25px 20px}}
+@media print{body{background:white;font-size:12pt}.shell{display:block;max-width:none;margin:0;box-shadow:none}nav,button{display:none!important}main{padding:0 12mm}.cover{break-after:page}h2{break-after:avoid}h3{break-after:avoid}.example,.callout,.diagram,table{break-inside:avoid}a{color:inherit;text-decoration:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav>
+<h2>Unit III Contents</h2>
+<a href="#outcomes">Learning outcomes</a>
+<a href="#clt">A. Computational Learning Theory</a>
+<a href="#pac">PAC learning</a>
+<a href="#finite">Finite hypothesis spaces</a>
+<a href="#vc">VC dimension</a>
+<a href="#mistake">Mistake-bound model</a>
+<a href="#ibl">B. Instance-Based Learning</a>
+<a href="#knn">k-Nearest Neighbour</a>
+<a href="#weighted">Distance-weighted KNN</a>
+<a href="#lwr">Locally weighted regression</a>
+<a href="#rbf">Radial basis functions</a>
+<a href="#cbr">Case-based reasoning</a>
+<a href="#lazy">Lazy vs eager learning</a>
+<a href="#revision">Revision questions</a>
+</nav>
+<main>
+<div class="cover">
+<div class="kicker">Machine Learning · Unit III</div>
+<h1>Computational Learning Theory and Instance-Based Learning</h1>
+<div class="subtitle">Combined lecture notes based on the two uploaded Unit III slide decks</div>
+<p><b>Course:</b> Machine Learning</p>
+<p><b>Coverage:</b> Computational Learning Theory (Chapter 7 themes) and Instance-Based Learning (Chapter 8 themes)</p>
+<p class="small">Prepared as one continuous set of classroom lecture notes. Explanations and worked illustrations are included to clarify the topics shown in the supplied slides.</p>
+</div>
+
+<section id="outcomes">
+<h2>Learning Outcomes</h2>
+<p>After studying this unit, students should be able to:</p>
+<ul>
+<li>Explain sample complexity, computational complexity and mistake bounds.</li>
+<li>Define true error, training error and probably approximately correct (PAC) learning.</li>
+<li>Use finite-hypothesis-space bounds to estimate a sufficient number of training examples.</li>
+<li>Explain shattering and calculate the VC dimension for simple hypothesis spaces.</li>
+<li>Describe the mistake-bound ideas behind FIND-S, HALVING and Weighted-Majority.</li>
+<li>Apply k-nearest neighbour to classification and regression problems.</li>
+<li>Explain distance weighting, locally weighted regression and radial basis functions.</li>
+<li>Describe case-based reasoning and distinguish lazy learning from eager learning.</li>
+</ul>
+</section>
+
+<section id="clt">
+<h2>A. Computational Learning Theory</h2>
+<h3>1. Introduction</h3>
+<p>Computational Learning Theory studies the fundamental limits and requirements of learning. Instead of asking only how a particular algorithm works, it asks whether a class of learning problems can be learned efficiently, how much data is required, and how many prediction mistakes may occur before learning succeeds.</p>
+<p>The uploaded slides raise four central questions: which learning problems are inherently easy or difficult; how many examples are sufficient; how learning changes when the learner can ask queries instead of receiving random examples; and how many mistakes occur before the target function is learned.</p>
+<table>
+<tr><th>Measure</th><th>Meaning</th><th>Central question</th></tr>
+<tr><td>Sample complexity</td><td>Number of training examples required.</td><td>How much data is needed?</td></tr>
+<tr><td>Computational complexity</td><td>Computational effort or running time required.</td><td>How much processing is needed?</td></tr>
+<tr><td>Mistake bound</td><td>Maximum number of prediction errors before convergence.</td><td>How many wrong predictions can occur?</td></tr>
+</table>
+<div class="example"><strong>Illustration – student performance prediction</strong>
+<p>Suppose a model predicts whether a student will pass using attendance, internal marks and assignment completion. Sample complexity asks how many labelled student records are needed. Computational complexity asks how much time the algorithm needs to learn. Mistake bound asks how many online predictions may be wrong before the learner identifies the target concept under the model's assumptions.</p></div>
+
+<h3>2. The learning problem setting</h3>
+<p>Let \(X\) be the set of all possible instances. A target concept \(c\) assigns a correct label to each instance. For binary classification, \(c:X\rightarrow\{0,1\}\), where 1 denotes a positive example and 0 denotes a negative example.</p>
+<p>Examples are drawn according to an instance distribution \(D\). The learner receives a training set \(S\) containing pairs \((x,c(x))\), and searches a hypothesis space \(H\) for a hypothesis \(h\) that predicts labels for unseen instances.</p>
+<div class="equation">\[S=\{(x_1,c(x_1)),(x_2,c(x_2)),\ldots,(x_m,c(x_m))\}\]</div>
+<p>The distribution \(D\) is generally unknown. The learner's performance is judged on new examples drawn from the same distribution, not merely on the examples it has already seen.</p>
+
+<h3>3. Error of a hypothesis</h3>
+<p><b>True error</b> is the probability that hypothesis \(h\) disagrees with the target concept on a randomly drawn instance.</p>
+<div class="equation">\[\operatorname{error}_{D}(h)=\Pr_{x\sim D}[h(x)\ne c(x)]\]</div>
+<p><b>Training error</b> is the fraction of the observed training examples that \(h\) classifies incorrectly.</p>
+<div class="equation">\[\operatorname{error}_{S}(h)=\frac{1}{m}\sum_{i=1}^{m}\mathbf{1}[h(x_i)\ne c(x_i)]\]</div>
+<div class="callout"><b>Important distinction:</b> Training error is measured on known examples. True error concerns future examples from the underlying distribution. A hypothesis can have zero training error and still make errors on unseen data.</div>
+<div class="example"><strong>Worked illustration</strong>
+<p>A classifier is tested on 100 labelled training records and misclassifies 5.</p>
+<ul><li>Training error = \(5/100=0.05=5\%\).</li><li>This does not prove that its true error is 5%; a separate unseen sample or a theoretical bound is needed to reason about generalisation.</li></ul></div>
+
+<h3 id="pac">4. Probably Approximately Correct (PAC) Learning</h3>
+<p>PAC learning formalises the idea that a learner should, with high probability, produce a hypothesis whose true error is small. “Probably” refers to confidence; “approximately correct” refers to an acceptable error level.</p>
+<p>A concept class is PAC-learnable when, for chosen accuracy parameter \(\epsilon\) and confidence parameter \(\delta\), the learner outputs a hypothesis with true error at most \(\epsilon\), with probability at least \(1-\delta\), using resources polynomially bounded in the relevant problem parameters.</p>
+<div class="equation">\[\Pr\big[\operatorname{error}_{D}(h)\le \epsilon\big]\ge 1-\delta\]</div>
+<table>
+<tr><th>Parameter</th><th>Meaning</th><th>Interpretation</th></tr>
+<tr><td>\(\epsilon\)</td><td>Error tolerance</td><td>Smaller \(\epsilon\) means higher desired accuracy.</td></tr>
+<tr><td>\(\delta\)</td><td>Failure probability</td><td>Smaller \(\delta\) means higher confidence.</td></tr>
+<tr><td>\(1-\delta\)</td><td>Confidence</td><td>Probability that the learned hypothesis meets the error requirement.</td></tr>
+</table>
+<div class="example"><strong>Example</strong>
+<p>If \(\epsilon=0.05\) and \(\delta=0.01\), the PAC goal is to obtain a hypothesis whose true error is at most 5%, with probability at least 99%.</p></div>
+
+<h3 id="finite">5. Sample Complexity for Finite Hypothesis Spaces</h3>
+<p>When \(H\) is finite, the number of hypotheses is \(|H|\). A learner may select a hypothesis that correctly classifies all observed training examples. The set of all such consistent hypotheses is called the <b>version space</b>.</p>
+<div class="equation">\[VS_{H,S}=\{h\in H:\forall (x,c(x))\in S,\ h(x)=c(x)\}\]</div>
+<p>A version space is \(\epsilon\)-exhausted when every remaining hypothesis has true error less than \(\epsilon\). The finite-space bound in the supplied slides is:</p>
+<div class="equation">\[\Pr(\text{version space is not }\epsilon\text{-exhausted})\le |H|e^{-\epsilon m}\]</div>
+<p>To make this failure probability no greater than \(\delta\), require:</p>
+<div class="equation">\[|H|e^{-\epsilon m}\le\delta\]</div>
+<div class="equation">\[\boxed{m\ge \frac{1}{\epsilon}\left(\ln |H|+\ln\frac{1}{\delta}\right)}\]</div>
+<p>This gives a sufficient number of examples for any consistent learner under the assumptions of the bound: independent random examples, a finite hypothesis space, and a realizable/noiseless target represented in the hypothesis space.</p>
+<div class="example"><strong>Worked numerical problem – finite hypothesis space</strong>
+<p>Suppose \(|H|=100\), desired error \(\epsilon=0.10\), and failure probability \(\delta=0.05\).</p>
+<ol>
+<li>Use \(m\ge \frac{1}{\epsilon}(\ln|H|+\ln(1/\delta))\).</li>
+<li>\(\ln 100=4.6052\); \(\ln 20=2.9957\).</li>
+<li>\(m\ge 10(4.6052+2.9957)=76.009\).</li>
+<li>Round up: at least <b>77 training examples</b>.</li>
+</ol>
+<p>This is a sufficient theoretical bound, not a guarantee that every dataset of 77 examples will be representative.</p></div>
+
+<h3>6. Agnostic learning and inconsistent hypotheses</h3>
+<p>The earlier finite-space bound assumes a consistent hypothesis with zero training error. In practical or noisy data, no hypothesis may classify every training example correctly. The learner may instead choose \(h_{\text{best}}\), the hypothesis with the lowest training error in \(H\).</p>
+<p>The supplied slides use the Hoeffding bound and a union bound over the finite hypothesis space to obtain:</p>
+<div class="equation">\[\Pr\left[\exists h\in H:\operatorname{error}_{D}(h)>\operatorname{error}_{S}(h)+\epsilon\right]\le |H|e^{-2m\epsilon^2}\]</div>
+<p>Solving for \(m\) gives the sufficient bound:</p>
+<div class="equation">\[\boxed{m\ge \frac{1}{2\epsilon^2}\left(\ln|H|+\ln\frac{1}{\delta}\right)}\]</div>
+<p>Unlike the consistent case, the sample requirement grows with \(1/\epsilon^2\). This is a bound on how far true error may exceed observed training error, simultaneously for hypotheses in the finite space.</p>
+
+<h3>7. Conjunctions of Boolean literals</h3>
+<p>For \(n\) Boolean variables, each variable has three possible roles in a conjunction: include it positively, include its negation, or omit it. Therefore:</p>
+<div class="equation">\[|H|=3^n\]</div>
+<p>Substituting this into the finite-space consistent learner bound:</p>
+<div class="equation">\[m\ge \frac{1}{\epsilon}\left(n\ln 3+\ln\frac{1}{\delta}\right)\]</div>
+<div class="example"><strong>Illustration</strong>
+<p>For \(n=4\), the number of conjunction hypotheses is \(3^4=81\). The bound can be calculated by substituting \(|H|=81\), or directly using \(4\ln3\), along with the chosen \(\epsilon\) and \(\delta\).</p></div>
+
+<h3>8. PAC-learnability of other concept classes</h3>
+<p>The slides distinguish sample complexity from computational complexity. A concept class can have a polynomial sample requirement yet still be difficult to learn in polynomial time using a particular representation or learner.</p>
+<ul>
+<li><b>Unbiased learners:</b> the slides discuss the unbiased concept class, where the learner's hypothesis space must itself be unbiased. This can make the finite-space sample bound unsuitable or very large.</li>
+<li><b>k-term DNF:</b> the supplied slides state that k-term DNF has polynomial sample complexity but is not polynomial-time learnable by a learner using \(H=C\), under the discussed setting.</li>
+<li><b>k-CNF:</b> the slides state that k-CNF is more expressive than k-term DNF and has polynomial sample and time complexity in the presented result; this gives an efficient learner for k-term DNF using \(H=\) k-CNF.</li>
+</ul>
+<div class="note"><b>Scope note:</b> The uploaded slides give these results mainly as summary statements. Detailed proofs and formal reductions are not developed in the supplied material, so they are not reconstructed here.</div>
+
+<h3 id="vc">9. Sample Complexity for Infinite Hypothesis Spaces: VC Dimension</h3>
+<p>For an infinite hypothesis space, counting \(|H|\) is not useful. The Vapnik–Chervonenkis (VC) dimension measures the expressive capacity of a hypothesis space by asking how many instances it can label in every possible way.</p>
+<h4>Shattering</h4>
+<p>A hypothesis space \(H\) <b>shatters</b> a finite set \(S\) if every possible binary labelling (dichotomy) of \(S\) can be produced by some hypothesis in \(H\). A set of \(d\) instances has \(2^d\) possible binary labelings.</p>
+<div class="equation">\[\text{Number of dichotomies on }d\text{ points}=2^d\]</div>
+<div class="diagram">
+<svg viewBox="0 0 760 220" role="img" aria-label="Three points and example binary labelings">
+<text x="380" y="24" text-anchor="middle" font-size="18" fill="#17365d" font-weight="bold">Shattering three instances requires all 8 labelings</text>
+<g font-size="14" fill="#263746" text-anchor="middle">
+<g transform="translate(80,55)"><circle cx="0" cy="0" r="9" fill="#16835d"/><circle cx="35" cy="0" r="9" fill="#16835d"/><circle cx="70" cy="0" r="9" fill="#16835d"/><text x="35" y="34">+++</text></g>
+<g transform="translate(250,55)"><circle cx="0" cy="0" r="9" fill="#16835d"/><circle cx="35" cy="0" r="9" fill="#16835d"/><circle cx="70" cy="0" r="9" fill="#c84d45"/><text x="35" y="34">++−</text></g>
+<g transform="translate(420,55)"><circle cx="0" cy="0" r="9" fill="#16835d"/><circle cx="35" cy="0" r="9" fill="#c84d45"/><circle cx="70" cy="0" r="9" fill="#16835d"/><text x="35" y="34">+−+</text></g>
+<g transform="translate(590,55)"><circle cx="0" cy="0" r="9" fill="#16835d"/><circle cx="35" cy="0" r="9" fill="#c84d45"/><circle cx="70" cy="0" r="9" fill="#c84d45"/><text x="35" y="34">+−−</text></g>
+<g transform="translate(80,130)"><circle cx="0" cy="0" r="9" fill="#c84d45"/><circle cx="35" cy="0" r="9" fill="#16835d"/><circle cx="70" cy="0" r="9" fill="#16835d"/><text x="35" y="34">−++</text></g>
+<g transform="translate(250,130)"><circle cx="0" cy="0" r="9" fill="#c84d45"/><circle cx="35" cy="0" r="9" fill="#16835d"/><circle cx="70" cy="0" r="9" fill="#c84d45"/><text x="35" y="34">−+−</text></g>
+<g transform="translate(420,130)"><circle cx="0" cy="0" r="9" fill="#c84d45"/><circle cx="35" cy="0" r="9" fill="#c84d45"/><circle cx="70" cy="0" r="9" fill="#16835d"/><text x="35" y="34">−−+</text></g>
+<g transform="translate(590,130)"><circle cx="0" cy="0" r="9" fill="#c84d45"/><circle cx="35" cy="0" r="9" fill="#c84d45"/><circle cx="70" cy="0" r="9" fill="#c84d45"/><text x="35" y="34">−−−</text></g>
+</g>
+<text x="380" y="210" text-anchor="middle" font-size="13" fill="#5d6b78">Green = positive · Red = negative</text>
+</svg>
+</div>
+<h4>Definition of VC dimension</h4>
+<p>The VC dimension of \(H\), written \(VC(H)\), is the size of the largest set of instances that can be shattered by \(H\). If arbitrarily large finite sets can be shattered, the VC dimension is infinite.</p>
+<div class="equation">\[VC(H)=\max\{|S|:H\text{ shatters }S\}\]</div>
+<h4>Example 1 – intervals on the real line</h4>
+<p>Let \(X=\mathbb{R}\), and let \(H\) contain all intervals \(a&lt;x&lt;b\). Two ordered points can be labelled in all four possible ways by selecting a suitable interval. However, three ordered points cannot be shattered: an interval cannot label the first and third points positive while the middle point is negative. Therefore:</p>
+<div class="equation">\[\boxed{VC(H)=2}\]</div>
+<h4>Example 2 – linear decision surfaces</h4>
+<p>The supplied slides state that a perceptron with \(r\) inputs (linear decision surfaces in an \(r\)-dimensional space) has:</p>
+<div class="equation">\[VC(H)=r+1\]</div>
+<p>Thus, for a two-input perceptron, the VC dimension is 3.</p>
+<h4>VC dimension and sample complexity</h4>
+<p>The slides emphasise that the VC dimension replaces the simple count \(|H|\) as a measure of complexity for many infinite hypothesis spaces. A common form of the realizable PAC sample bound, for finite VC dimension \(d\), is of order:</p>
+<div class="equation">\[m=O\left(\frac{1}{\epsilon}\left(d\log\frac{1}{\epsilon}+\log\frac{1}{\delta}\right)\right)\]</div>
+<p>This expression conveys the key relationship: more expressive hypothesis spaces (larger VC dimension) generally require more examples to achieve the same accuracy and confidence.</p>
+<h4>VC dimension for neural networks</h4>
+<p>The uploaded slides include a section on VC dimension for neural networks, but the slide content supplied is primarily a heading/illustration and does not provide a complete derivation or a specific numerical formula. The key idea is that network capacity depends on its architecture and number of adjustable parameters; a larger capacity can represent more complex decision boundaries and may require more training data.</p>
+
+<h3 id="mistake">10. The Mistake-Bound Model of Learning</h3>
+<p>In the mistake-bound model, learning is evaluated by the total number of incorrect predictions made before the learner converges to the correct target concept. This differs from PAC analysis, which focuses on the number of random training examples needed to achieve a desired error and confidence.</p>
+<h4>10.1 FIND-S mistake bound</h4>
+<p>FIND-S begins with the most specific hypothesis and generalises it when it receives positive examples. Under the assumptions stated in the slides (noise-free data and a target concept representable in the hypothesis space), the hypothesis is always at least as specific as the target concept. The mistakes to count are therefore positive examples initially predicted as negative.</p>
+<div class="equation">\[\boxed{\text{Mistake bound for FIND-S}\le n+1}\]</div>
+<p>Here \(n\) is the number of literals/attributes in the representation used in the slides. In the worst case, each mistake removes only one literal before the most general target is reached.</p>
+<h4>10.2 HALVING algorithm</h4>
+<p>HALVING maintains the current version space and predicts by majority vote among its hypotheses. After a mistake, at least half of the remaining hypotheses are eliminated. Therefore, for finite \(H\), the number of mistakes is logarithmically bounded by the initial number of hypotheses.</p>
+<div class="equation">\[\boxed{\text{Mistakes}\le \log_2|H|}\]</div>
+<div class="example"><strong>Worked illustration</strong>
+<p>If the initial version space contains 64 hypotheses, then:</p>
+<p>\(\log_2 64=6\). Thus the HALVING bound is 6 mistakes. Each mistake reduces the version space by at least half: 64 → 32 → 16 → 8 → 4 → 2 → 1.</p></div>
+<h4>10.3 Optimal mistake bounds and Weighted-Majority</h4>
+<p>The uploaded slide deck lists “Optimal Mistake Bounds” and “Weighted-Majority Algorithm” as final topics, but provides only headings without enough explanatory text or equations to reproduce the detailed derivation. At a high level, Weighted-Majority combines predictions from multiple experts or prediction rules by assigning weights and giving more influence to better-performing predictors. The detailed update rule and its formal bound are not specified in the supplied slides.</p>
+</section>
+
+<hr>
+
+<section id="ibl">
+<h2>B. Instance-Based Learning</h2>
+<h3>11. Introduction</h3>
+<p>Instance-based learning stores training examples instead of constructing one global model during training. When a new query instance arrives, the learner retrieves similar stored examples and uses them to predict the target value.</p>
+<p>These methods can build a different local approximation for each query. This is useful when a complex target function can be described by simpler local regions. The main disadvantages are potentially high prediction cost and the possibility that irrelevant attributes distort similarity calculations.</p>
+<div class="diagram">
+<svg viewBox="0 0 760 150" role="img" aria-label="Instance-based learning workflow">
+<defs><marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#245b8f"/></marker></defs>
+<g fill="#eef5fb" stroke="#245b8f" stroke-width="2">
+<rect x="20" y="42" width="150" height="62" rx="9"/><rect x="220" y="42" width="150" height="62" rx="9"/><rect x="420" y="42" width="150" height="62" rx="9"/><rect x="620" y="42" width="120" height="62" rx="9"/>
+</g>
+<g font-family="Arial" font-size="15" fill="#17365d" text-anchor="middle"><text x="95" y="67">Store training</text><text x="95" y="86">examples</text><text x="295" y="67">Receive query</text><text x="295" y="86">instance</text><text x="495" y="67">Find similar</text><text x="495" y="86">instances</text><text x="680" y="67">Predict</text><text x="680" y="86">target</text></g>
+<g stroke="#245b8f" stroke-width="2.5" marker-end="url(#arr)"><path d="M170 73 H215"/><path d="M370 73 H415"/><path d="M570 73 H615"/></g>
+</svg>
+</div>
+
+<h3 id="knn">12. k-Nearest Neighbour (k-NN) Learning</h3>
+<p>In k-NN, instances are represented as points in an \(n\)-dimensional feature space. The algorithm finds the \(k\) stored training instances closest to the query point \(x_q\). For numerical features, the slides define distance using Euclidean distance.</p>
+<div class="equation">\[d(x_i,x_j)=\sqrt{\sum_{r=1}^{n}(a_r(x_i)-a_r(x_j))^2}\]</div>
+<h4>Algorithm</h4>
+<ol class="steps">
+<li>Store every labelled training example.</li>
+<li>For a query \(x_q\), calculate its distance from the training examples.</li>
+<li>Select the \(k\) examples with the smallest distances.</li>
+<li>For classification, return the majority class among those neighbours.</li>
+<li>For regression, return the mean target value of the \(k\) neighbours.</li>
+</ol>
+<p>For discrete-valued targets:</p>
+<div class="equation">\[\hat f(x_q)=\arg\max_{v\in V}\sum_{i=1}^{k}\mathbf{1}[v=f(x_i)]\]</div>
+<p>For real-valued targets:</p>
+<div class="equation">\[\hat f(x_q)=\frac{1}{k}\sum_{i=1}^{k}f(x_i)\]</div>
+<h4>Worked numerical example – classification</h4>
+<p>Suppose a query student's feature vector is \((\text{attendance},\text{internal mark})=(80,70)\). The following training records are available:</p>
+<table>
+<tr><th>Student</th><th>Attendance</th><th>Internal mark</th><th>Class</th><th>Euclidean distance from (80,70)</th></tr>
+<tr><td>A</td><td>78</td><td>68</td><td>Pass</td><td>\(\sqrt{2^2+2^2}=2.83\)</td></tr>
+<tr><td>B</td><td>85</td><td>72</td><td>Pass</td><td>\(\sqrt{5^2+2^2}=5.39\)</td></tr>
+<tr><td>C</td><td>75</td><td>65</td><td>Fail</td><td>\(\sqrt{5^2+5^2}=7.07\)</td></tr>
+<tr><td>D</td><td>70</td><td>60</td><td>Fail</td><td>\(\sqrt{10^2+10^2}=14.14\)</td></tr>
+<tr><td>E</td><td>88</td><td>75</td><td>Pass</td><td>\(\sqrt{8^2+5^2}=9.43\)</td></tr>
+</table>
+<p>For \(k=3\), the three nearest neighbours are A (Pass), B (Pass) and C (Fail). Majority vote is Pass (2 out of 3). Therefore the predicted class is <b>Pass</b>.</p>
+<div class="callout"><b>Effect of k:</b> A small \(k\) can be sensitive to noise; a larger \(k\) smooths the decision but may blur local structure. An odd \(k\) is often chosen for two-class classification to reduce ties.</div>
+
+<h4>Decision surface and Voronoi diagram</h4>
+<p>The slide deck's Figure 8.1 illustrates that 1-NN assigns each query to the class of its closest training example. The regions closest to each stored point form a Voronoi partition. The same figure shows that a query can be classified positive by 1-NN but negative by 5-NN, because the larger neighbourhood has a different majority.</p>
+<h4>12.1 k-NN for regression</h4>
+<p>For a real-valued target, k-NN predicts the average of the target values of the nearest neighbours. For example, if the three nearest houses have prices ₹40 lakh, ₹45 lakh and ₹50 lakh, the predicted price is:</p>
+<div class="equation">\[\hat f(x_q)=\frac{40+45+50}{3}=45\text{ lakh}\]</div>
+
+<h3 id="weighted">13. Distance-Weighted Nearest Neighbour</h3>
+<p>Ordinary k-NN gives every selected neighbour an equal vote. Distance-weighted k-NN gives more influence to closer neighbours. The supplied slides use inverse-square distance weighting:</p>
+<div class="equation">\[w_i=\frac{1}{d(x_q,x_i)^2}\]</div>
+<p>For classification, the weighted vote for each class is summed. For regression, the weighted average is used:</p>
+<div class="equation">\[\hat f(x_q)=\frac{\sum_{i=1}^{k}w_i f(x_i)}{\sum_{i=1}^{k}w_i}\]</div>
+<div class="example"><strong>Worked example – weighted regression</strong>
+<p>Two nearest examples have target values 10 and 20, at distances 1 and 2.</p>
+<ul><li>\(w_1=1/1^2=1\)</li><li>\(w_2=1/2^2=0.25\)</li></ul>
+<p>\(\hat f(x_q)=\frac{1(10)+0.25(20)}{1+0.25}=\frac{15}{1.25}=12\).</p>
+<p>The nearer example has greater influence, so the prediction (12) is closer to 10 than to 20.</p></div>
+<p>If the query exactly matches a stored training example, its distance is zero. The slide notes that the prediction should be set to that example's target value; if multiple exact matches exist, use their majority class for classification.</p>
+<h4>Local and global methods</h4>
+<ul><li><b>Local method:</b> uses only the nearest training examples.</li><li><b>Global method:</b> considers all training examples. The slides identify the global distance-weighted form as Shepard's method.</li></ul>
+
+<h3>14. Remarks and practical issues in k-NN</h3>
+<h4>Curse of dimensionality and irrelevant attributes</h4>
+<p>Distance is often calculated using all attributes. If only a few attributes are relevant and many are irrelevant, the irrelevant dimensions can dominate the distance and make genuinely similar examples appear far apart. The slides refer to this issue as the <b>curse of dimensionality</b>.</p>
+<div class="example"><strong>Illustration</strong>
+<p>Suppose student success depends mainly on attendance and internal marks, but the dataset also contains 18 unrelated attributes. A distance calculation over all 20 attributes may be misleading. Feature selection or attribute weighting can improve the similarity measure.</p></div>
+<h4>Efficient memory indexing – kd-tree</h4>
+<p>Because k-NN delays much of its computation until a query arrives, prediction can be expensive. The slides introduce the <b>kd-tree</b>: training instances are stored at leaves, nearby instances are organised in nearby regions, and internal nodes test selected attributes to direct a query toward a relevant leaf.</p>
+
+<h3 id="lwr">15. Locally Weighted Regression (LWR)</h3>
+<p>Locally weighted regression constructs an explicit approximation to a real-valued target function near the query point \(x_q\). It is:</p>
+<ul><li><b>Local</b> because it focuses on data near the query.</li><li><b>Weighted</b> because nearby examples receive greater weight.</li><li><b>Regression</b> because it approximates a real-valued function.</li></ul>
+<p>Unlike a single global regression model, LWR may fit a new local model for each query instance. The supplied slides introduce a local linear approximation:</p>
+<div class="equation">\[\hat f(x)=w_0+w_1a_1(x)+\cdots+w_na_n(x)\]</div>
+<p>In ordinary global linear regression, coefficients are selected by minimising the total squared error:</p>
+<div class="equation">\[E=\frac{1}{2}\sum_{x\in D}(f(x)-\hat f(x))^2\]</div>
+<p>For local regression, the error criterion is modified so that nearby examples matter more. The slides present three alternatives:</p>
+<ol>
+<li>Minimise squared error over only the \(k\) nearest neighbours.</li>
+<li>Use all training examples, but weight each squared error by a decreasing function \(K\) of distance from the query.</li>
+<li>Combine the nearest-neighbour restriction with distance weighting.</li>
+</ol>
+<div class="equation">\[E_2(x_q)=\frac{1}{2}\sum_{x\in D}(f(x)-\hat f(x))^2K(d(x_q,x))\]</div>
+<p>Here \(K(d)\) is a kernel/weight function that decreases as distance increases. The resulting local model is fitted for the current query and used to calculate \(\hat f(x_q)\).</p>
+<h4>Worked conceptual example</h4>
+<p>Suppose we want to predict house price near a particular locality. A single straight line fitted across an entire city may not describe every locality well. LWR fits a local line using nearby houses, giving close properties greater influence. A different query locality can produce a different fitted line.</p>
+<h4>Remarks</h4>
+<p>The slides state that local target functions are commonly approximated using constant, linear or quadratic functions. More complex functions are often avoided because fitting them separately for every query is expensive, while simple models may fit a sufficiently small local region well.</p>
+
+<h3 id="rbf">16. Radial Basis Functions (RBF)</h3>
+<p>Radial basis function learning is related to distance-weighted regression and neural networks. An RBF unit responds according to the distance between the input and a centre. A commonly used Gaussian radial basis function is:</p>
+<div class="equation">\[\phi_j(x)=\exp\left(-\frac{\|x-\mu_j\|^2}{2\sigma_j^2}\right)\]</div>
+<p>Here \(\mu_j\) is the centre of unit \(j\), and \(\sigma_j\) controls its width. The response is largest at the centre and decreases as the input moves away.</p>
+<div class="diagram">
+<svg viewBox="0 0 700 245" role="img" aria-label="Gaussian radial basis response curve">
+<line x1="70" y1="195" x2="650" y2="195" stroke="#34495e" stroke-width="2"/>
+<line x1="350" y1="210" x2="350" y2="25" stroke="#34495e" stroke-width="2"/>
+<path d="M80 190 C180 190 220 180 260 130 C300 60 320 35 350 35 C380 35 400 60 440 130 C480 180 520 190 640 190" fill="none" stroke="#087e8b" stroke-width="4"/>
+<g fill="#34495e" font-size="14"><text x="660" y="200">Input distance</text><text x="360" y="30">Response</text><text x="350" y="218" text-anchor="middle">Centre μ</text><text x="350" y="18" text-anchor="middle">Maximum</text></g>
+</svg>
+</div>
+<p>A network combines several such local responses, typically using a weighted sum:</p>
+<div class="equation">\[\hat f(x)=w_0+\sum_{j=1}^{M}w_j\phi_j(x)\]</div>
+<p><b>Role of width:</b> a small \(\sigma\) gives a narrow response around the centre; a large \(\sigma\) gives a broader response. The uploaded slide deck introduces RBFs but does not provide a complete derivation of centre/width selection or training; the Gaussian expression above is a standard explanatory form to make the slide topic understandable.</p>
+
+<h3 id="cbr">17. Case-Based Reasoning (CBR)</h3>
+<p>Case-based reasoning uses previously solved cases to help solve a new problem. It shares two properties with k-NN and locally weighted regression: it delays generalisation until a query arrives and retrieves cases similar to the new problem. Unlike standard nearest-neighbour methods, cases need not be represented as numerical points in Euclidean space; they may use rich symbolic descriptions.</p>
+<p>Applications mentioned in the supplied slides include conceptual design of mechanical devices, reasoning about legal cases using previous rulings, and planning/scheduling by reusing parts of earlier solutions.</p>
+<h4>CADET example from the slides</h4>
+<p>CADET supports conceptual design of simple mechanical devices such as water faucets. Its library contains approximately 75 earlier designs and design fragments. A stored case such as a T-junction pipe is represented using its structure and qualitative function. For example, the functional description can state that output water flow \(Q_3\) increases when input flow \(Q_1\) increases.</p>
+<p>For a new design problem, CADET searches for stored cases whose functional descriptions match the requested function. It may return an exact match or identify a case that matches part of the desired functional specification. The slides note that CADET has limited ability to combine and adapt multiple retrieved cases, and relies substantially on the user for adaptation.</p>
+<div class="callout"><b>CBR cycle – classroom summary:</b> retrieve a similar case → reuse its solution → revise/adapt it for the new problem → retain the new experience as a case. The uploaded slides describe retrieval and adaptation in the CADET example; this four-stage wording is a general teaching summary of the CBR process.</div>
+
+<h3 id="lazy">18. Lazy Learning and Eager Learning</h3>
+<p>The final slides compare lazy and eager learning in terms of computation and inductive bias.</p>
+<table>
+<tr><th>Lazy learning</th><th>Eager learning</th></tr>
+<tr><td>Stores training examples and delays generalisation until a query arrives.</td><td>Builds a general model during training.</td></tr>
+<tr><td>Usually less computation during training.</td><td>Usually more computation during training.</td></tr>
+<tr><td>Usually more computation at prediction time.</td><td>Usually less computation at prediction time.</td></tr>
+<tr><td>Can use the query point to choose a local approximation.</td><td>Commits to a global approximation before seeing future queries.</td></tr>
+<tr><td>Examples: k-NN, locally weighted regression.</td><td>Examples: decision trees and many fitted global models.</td></tr>
+</table>
+<p>The slides emphasise that lazy methods can implicitly represent a target function using many local approximations. Eager methods generally commit to one global approximation, although some eager models, such as RBF networks, can combine multiple local approximations.</p>
+<div class="example"><strong>Analogy</strong>
+<p>A lazy learner is like a librarian who waits for a specific question, then searches for the most relevant stored examples. An eager learner is like a teacher who studies all examples in advance and prepares a general rule before the question is asked.</p></div>
+</section>
+
+<section id="revision">
+<h2>19. Unit III – Quick Revision</h2>
+<table>
+<tr><th>Topic</th><th>Remember</th></tr>
+<tr><td>True error</td><td>Probability of misclassification on a random instance from \(D\).</td></tr>
+<tr><td>PAC learning</td><td>True error at most \(\epsilon\), with probability at least \(1-\delta\).</td></tr>
+<tr><td>Finite consistent bound</td><td>\(m\ge\frac{1}{\epsilon}(\ln|H|+\ln(1/\delta))\).</td></tr>
+<tr><td>Agnostic finite bound</td><td>\(m\ge\frac{1}{2\epsilon^2}(\ln|H|+\ln(1/\delta))\).</td></tr>
+<tr><td>VC dimension</td><td>Largest number of instances that can be shattered.</td></tr>
+<tr><td>Intervals on a line</td><td>VC dimension = 2.</td></tr>
+<tr><td>Perceptron with \(r\) inputs</td><td>VC dimension = \(r+1\), as stated in the slides.</td></tr>
+<tr><td>FIND-S mistake bound</td><td>At most \(n+1\), under the slide assumptions.</td></tr>
+<tr><td>HALVING mistake bound</td><td>At most \(\log_2|H|\).</td></tr>
+<tr><td>Euclidean distance</td><td>Square root of the sum of squared feature differences.</td></tr>
+<tr><td>Distance weighting</td><td>Closer examples receive greater weight; slides use inverse-square weighting.</td></tr>
+<tr><td>LWR</td><td>Fits a local regression model around each query.</td></tr>
+<tr><td>RBF</td><td>Local response determined by distance from a centre.</td></tr>
+<tr><td>CBR</td><td>Retrieves and adapts similar prior cases.</td></tr>
+<tr><td>Lazy learning</td><td>Delays generalisation until prediction time.</td></tr>
+</table>
+
+<h3>Important examination questions</h3>
+<h4>Short-answer questions</h4>
+<ol>
+<li>Define sample complexity, computational complexity and mistake bound.</li>
+<li>Differentiate training error and true error.</li>
+<li>What are \(\epsilon\) and \(\delta\) in PAC learning?</li>
+<li>Define version space and \(\epsilon\)-exhaustion.</li>
+<li>What is shattering? Define VC dimension.</li>
+<li>What is a Voronoi diagram in 1-NN?</li>
+<li>Explain the curse of dimensionality in k-NN.</li>
+<li>Differentiate local and global methods.</li>
+<li>What is the role of the centre and width in an RBF unit?</li>
+<li>Differentiate lazy and eager learning.</li>
+</ol>
+<h4>Long-answer questions</h4>
+<ol>
+<li>Explain PAC learning and derive the finite hypothesis-space sample complexity bound.</li>
+<li>Explain agnostic learning and the finite-space bound for inconsistent hypotheses.</li>
+<li>Explain shattering and VC dimension with the interval example.</li>
+<li>Discuss the mistake-bound model, including FIND-S and HALVING.</li>
+<li>Explain the k-nearest neighbour algorithm with Euclidean distance and a worked example.</li>
+<li>Explain distance-weighted nearest neighbour for classification and regression.</li>
+<li>Describe locally weighted regression and its error criteria.</li>
+<li>Explain radial basis functions and their relationship to local approximation.</li>
+<li>Discuss case-based reasoning using the CADET example.</li>
+<li>Compare lazy and eager learning.</li>
+</ol>
+<h3>Classroom practice problems</h3>
+<ol>
+<li>A finite hypothesis space has 50 hypotheses. Find a sufficient sample size for \(\epsilon=0.1\), \(\delta=0.05\), using the consistent finite-space bound.</li>
+<li>For a HALVING learner with 128 hypotheses, calculate the mistake bound.</li>
+<li>Calculate Euclidean distance between \(x=(3,4)\) and \(y=(7,1)\).</li>
+<li>Using inverse-square weights, estimate a target when values 12 and 18 are at distances 2 and 3.</li>
+<li>State the VC dimension of intervals on the real line and justify why three points cannot be shattered.</li>
+</ol>
+<div class="note"><b>Source alignment:</b> These notes combine the two uploaded Unit III slide decks. The Computational Learning Theory deck lists PAC learning, finite/infinite hypothesis spaces, VC dimension and mistake bounds. The Instance-Based Learning deck lists k-NN, distance weighting, locally weighted regression, RBFs, case-based reasoning, and lazy/eager learning. Where a supplied slide contains only a heading or incomplete formula, the limitation is identified rather than presented as a source-derived proof.</div>
+</section>
+</main>
+</div>
+</body>
+</html>

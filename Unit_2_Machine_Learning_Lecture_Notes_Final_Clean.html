@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)'], ['$', '$']], displayMath: [['\\[','\\]'], ['$$','$$']], processEscapes: true },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+  chtml: { scale: 1.08, displayAlign: 'center', displayIndent: '0' }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<title>Machine Learning – Unit II Lecture Notes</title>
+<style>
+:root{--navy:#12345a;--blue:#1e5b91;--teal:#087f8c;--ink:#263445;--muted:#5e6c7b;--line:#d9e2ec;--pale:#eef5fb;--mint:#eaf7f4;--gold:#fff6df}
+*{box-sizing:border-box}body{margin:0;background:#edf2f7;color:var(--ink);font:16px/1.68 Georgia,"Times New Roman",serif}
+.shell{max-width:1160px;margin:28px auto;background:#fff;box-shadow:0 12px 38px #18324b18}
+.hero{padding:46px 58px 42px;background:linear-gradient(125deg,#102d50,#1d5c8c 65%,#087f8c);color:#fff}
+.kicker{font:700 12px/1.4 Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#bfe9f0}
+.hero h1{font:700 34px/1.18 Arial,sans-serif;margin:12px 0 8px}.hero h2{font:400 19px/1.4 Arial,sans-serif;margin:0;color:#e2f1fa}
+.hero .meta{margin-top:28px;padding-top:18px;border-top:1px solid #ffffff45;font:14px/1.7 Arial,sans-serif;color:#e4edf6}
+.controls{display:flex;justify-content:flex-end;gap:10px;padding:15px 24px;background:#f5f8fb;border-bottom:1px solid var(--line)}
+button{background:#123f68;color:#fff;border:0;padding:10px 16px;border-radius:6px;font:700 13px Arial,sans-serif;cursor:pointer}
+.layout{display:grid;grid-template-columns:255px 1fr}nav{background:#f5f8fb;border-right:1px solid var(--line);padding:28px 22px;font:13px/1.5 Arial,sans-serif}
+nav strong{display:block;color:var(--navy);font-size:14px;margin-bottom:12px}nav a{display:block;text-decoration:none;color:#40566e;padding:5px 0;border-bottom:1px solid #e7edf3}
+main{padding:38px 54px 60px;min-width:0}h2{font:700 25px/1.25 Arial,sans-serif;color:var(--navy);margin:42px 0 16px;padding-bottom:9px;border-bottom:2px solid #d8e6f1}
+h3{font:700 19px/1.35 Arial,sans-serif;color:var(--blue);margin:27px 0 10px}h4{font:700 16px Arial,sans-serif;color:#35516e;margin:20px 0 7px}
+p{margin:9px 0 13px}ul,ol{padding-left:25px}li{margin:5px 0}.lead{font-size:18px;color:#334e68}
+.info,.example,.board,.activity,.warning,.takeaway{padding:17px 20px;margin:18px 0;border-radius:9px;border:1px solid var(--line)}
+.info{background:var(--pale);border-left:5px solid var(--blue)}.example{background:#f6fbfa;border-left:5px solid var(--teal)}
+.board{background:#f8f9fc;border:1px dashed #8ca4bd}.activity{background:#f0faf5;border-left:5px solid #32956e}
+.warning{background:#fff9ec;border-left:5px solid #d39a2f}.takeaway{background:#f2f7ff;border-left:5px solid #456eb0}
+.label{font:700 11px Arial,sans-serif;letter-spacing:1px;text-transform:uppercase;color:#55718d;margin-bottom:7px}
+table{border-collapse:collapse;width:100%;margin:14px 0 20px;font-size:14px}
+th{background:#eaf1f8;color:#173b60;text-align:left;font:700 13px Arial,sans-serif}
+th,td{border:1px solid #ccd8e3;padding:9px 10px;vertical-align:top}tr:nth-child(even) td{background:#fafcfe}
+.formula{font:18px/1.9 "Cambria Math","STIX Two Math","Times New Roman",serif;text-align:center;background:#f7f9fc;padding:16px 18px;border-radius:7px;margin:14px 0;overflow-x:auto;overflow-wrap:normal}
+mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}mjx-container[display="true"]{margin:.45em 0!important}
+.small{font-size:14px;color:var(--muted)}.pill{display:inline-block;background:#e3f0f7;color:#174b70;padding:3px 9px;border-radius:20px;font:700 11px Arial,sans-serif;margin:3px}
+hr{border:0;border-top:1px solid var(--line);margin:30px 0}.footer{padding:25px 55px;background:#f5f8fb;border-top:1px solid var(--line);font:13px/1.6 Arial,sans-serif;color:#617386}
+@media(max-width:800px){.layout{grid-template-columns:1fr}nav{border-right:0;border-bottom:1px solid var(--line)}main{padding:28px 22px}.hero{padding:34px 25px}.hero h1{font-size:28px}.shell{margin:0}.footer{padding:22px}}
+@media print{body{background:#fff;font-size:11pt;color:#111}.shell{max-width:none;margin:0;box-shadow:none}.controls,nav{display:none!important}.layout{display:block}
+.hero{background:#fff!important;color:#111;padding:18mm 15mm 10mm;border-bottom:2px solid #234}.hero h1,.hero h2,.hero .meta,.kicker{color:#111}
+main{padding:8mm 15mm}h2{page-break-after:avoid;font-size:18pt}h3{page-break-after:avoid;font-size:14pt}
+table,.example,.info,.board,.activity,.warning{break-inside:avoid}a{color:inherit;text-decoration:none}.footer{padding:8mm 15mm}
+mjx-container{overflow:visible!important}.formula{break-inside:avoid}}
+
+.tree-figure{margin:22px 0;padding:18px;background:#f8fafc;border:1px solid #d8e1ec;border-radius:12px;page-break-inside:avoid;break-inside:avoid}
+.tree-figure .label{font-weight:700;color:#17365d;margin-bottom:12px}
+.decision-tree{display:block;width:100%;height:auto;max-width:100%;background:#fff;border-radius:8px}
+.tree-key{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px;font-size:.9em;color:#334155}
+@media print{.tree-figure{background:#fff;border:1px solid #9aa9ba}.decision-tree{max-height:165mm}}
+
+</style>
+</head>
+<body><div class="shell">
+<div class="controls"><button onclick="window.print()">Print / Save as PDF</button><button onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top</button></div>
+<header class="hero">
+<div class="kicker">Department of Computer Science &amp; Engineering</div>
+<h1>MACHINE LEARNING</h1><h2>UNIT II – Decision Tree Learning, Evaluating Hypotheses and Bayesian Learning</h2>
+<div class="meta"><strong>Dr. K. Lavanya</strong> · Assistant Professor<br>Department of CSE · University College of Sciences<br>Acharya Nagarjuna University, Nagarjuna Nagar<br>Prescribed Textbook: Tom M. Mitchell, <em>Machine Learning</em></div>
+</header>
+<div class="layout">
+<nav><strong>UNIT II CONTENTS</strong>
+<a href="#overview">Unit overview</a><a href="#dt">A. Decision Tree Learning</a><a href="#representation">Representation &amp; suitability</a><a href="#entropy">Entropy &amp; information gain</a><a href="#id3">ID3 &amp; PlayTennis</a><a href="#searchtree">Hypothesis search &amp; bias</a><a href="#overfit">Overfitting &amp; issues</a>
+<a href="#eval">B. Evaluating Hypotheses</a><a href="#errors">Sample &amp; true error</a><a href="#sampling">Sampling theory</a><a href="#ci">Confidence intervals</a><a href="#difference">Comparing hypotheses &amp; algorithms</a>
+<a href="#bayes">C. Bayesian Learning</a><a href="#bayesrule">Bayes theorem &amp; cancer example</a><a href="#conceptbayes">Bayes concept learning</a><a href="#ml">Maximum likelihood &amp; least squares</a><a href="#mdL">MDL principle</a><a href="#optimal">Bayes optimal &amp; Gibbs</a><a href="#naive">Naïve Bayes</a><a href="#text">Text classification</a><a href="#bbn">Bayesian networks &amp; EM</a><a href="#revision">Revision</a>
+</nav>
+<main>
+<section id="overview"><h2>UNIT II – Overview</h2>
+<p class="lead">This unit develops three connected ideas: constructing decision trees from examples, estimating how well a learned hypothesis will perform on unseen data, and using probability to reason about hypotheses and classifications.</p>
+<div class="info"><div class="label">Learning outcomes</div>After completing this unit, students should be able to:
+<ul><li>Represent classification knowledge using decision trees and convert paths into rules.</li><li>Calculate entropy and information gain and trace the ID3 algorithm.</li><li>Explain hypothesis-space search, inductive bias, Occam’s razor and overfitting.</li><li>Distinguish sample error from true error and calculate approximate confidence intervals.</li><li>Explain sampling distributions, bias, variance and the Central Limit Theorem.</li><li>Apply Bayes’ theorem, calculate posterior probabilities and distinguish MAP from maximum likelihood.</li><li>Explain MDL, Bayes optimal classification, Gibbs sampling and Naïve Bayes.</li><li>Describe conditional independence and the basic purpose of Bayesian belief networks.</li></ul></div>
+<p><strong>Suggested teaching time:</strong> 12–15 hours. <strong>Prerequisites:</strong> Unit I concepts, basic logarithms, probability and algebra.</p>
+<p><strong>Textbook basis:</strong> Tom M. Mitchell, <em>Machine Learning</em>, Chapters 3, 5 and 6. The order below follows the Unit II slide sequence.</p></section>
+
+<section id="dt"><h2>A. DECISION TREE LEARNING</h2>
+<h3>1. Introduction</h3>
+<p>Decision tree learning is a method for approximating discrete-valued target functions. The learned function is represented as a tree. A decision tree can also be rewritten as a set of IF–THEN rules, which often makes the learned knowledge easier for a person to understand.</p>
+<p>Decision trees are used in classification tasks such as medical case assessment, credit-risk analysis and equipment-fault diagnosis. A tree asks a sequence of attribute questions and follows the branch corresponding to each answer until it reaches a leaf containing a predicted class.</p>
+<div class="example"><div class="label">Healthcare example</div>A simplified educational decision tree might ask whether a patient has a particular symptom, then examine a laboratory result, and finally output a category used in a teaching dataset. A real diagnosis must use validated clinical processes; this illustration only explains the structure of a classifier.</div>
+<h3 id="representation">2. Decision Tree Representation</h3>
+<ul><li><strong>Root node:</strong> the first attribute test.</li><li><strong>Internal node:</strong> a test on an attribute.</li><li><strong>Branch:</strong> one possible value of the tested attribute.</li><li><strong>Leaf:</strong> the predicted target class.</li></ul>
+<p>To classify an instance, start at the root, evaluate the attribute test, follow the matching branch, and repeat until a leaf is reached.</p>
+<div class="board"><div class="label">Example tree – PlayTennis idea</div>
+<strong>Outlook?</strong><br>↙ Sunny &nbsp;&nbsp; ↓ Overcast &nbsp;&nbsp; ↘ Rain<br>
+Sunny → test Humidity → High: No; Normal: Yes<br>
+Overcast → Yes<br>
+Rain → test Wind → Strong: No; Weak: Yes
+</div>
+<p>Each root-to-leaf path is a conjunction of tests. The whole tree is a disjunction (OR) of the paths that lead to a positive leaf. Thus a decision tree can represent concepts that require several alternative combinations of conditions.</p>
+<h3>3. Appropriate Problems for Decision Tree Learning</h3>
+<p>According to the slides, decision trees are particularly appropriate when:</p>
+<ol><li>Instances are represented by attribute-value pairs.</li><li>The target function has discrete output values, such as Yes/No.</li><li>Disjunctive descriptions may be required.</li><li>Training data may contain errors.</li><li>Some attribute values may be missing.</li></ol>
+<p>Examples include medical-patient classification, equipment malfunction diagnosis and loan-default classification. These are classification problems because the target is one of a finite set of categories.</p>
+
+<h3 id="entropy">4. Entropy – Measuring Impurity</h3>
+<p>ID3 selects the attribute that is most useful for separating training examples according to their target class. To define this usefulness, we first measure the impurity of a set using entropy.</p>
+<div class="formula">\[Entropy(S)=-p_{+}\log_2 p_{+}-p_{-}\log_2 p_{-}\]</div>
+<p>Here \(p_+\) is the fraction of positive examples and \(p_-\) is the fraction of negative examples. By convention, \(0\log_2 0=0\).</p>
+<table><tr><th>Distribution</th><th>Entropy</th><th>Interpretation</th></tr><tr><td>All positive [14+, 0−]</td><td>0</td><td>Pure set</td></tr><tr><td>Equal [7+, 7−]</td><td>1 bit</td><td>Maximum impurity for two classes</td></tr><tr><td>[9+, 5−]</td><td>0.940 bits</td><td>Mixed set</td></tr></table>
+<h4>Numerical example 1 – Entropy of [9+, 5−]</h4>
+<p>Total examples = 14. Therefore \(p_+=9/14=0.6429\) and \(p_-=5/14=0.3571\).</p>
+<div class="formula">\[H(S)=-\frac{9}{14}\log_2\frac{9}{14}-\frac{5}{14}\log_2\frac{5}{14}\]</div>
+<div class="formula">\[H(S)\approx -(0.6429)(-0.6374)-(0.3571)(-1.4854)\]</div>
+<div class="takeaway"><strong>Answer: \(H(S)\approx0.940\) bits.</strong> The set is not pure because it contains both positive and negative examples.</div>
+<p>For a target with \(c\) possible classes, entropy is:</p><div class="formula">\[Entropy(S)=-\sum_{i=1}^{c}p_i\log_2 p_i\]</div>
+<h3>5. Information Gain</h3>
+<p>Information gain measures the expected reduction in entropy when examples are partitioned according to an attribute \(A\).</p>
+<div class="formula">\[Gain(S,A)=Entropy(S)-\sum_{v\in Values(A)}\frac{|S_v|}{|S|}Entropy(S_v)\]</div>
+<p>\(S_v\) is the subset of examples for which attribute \(A\) has value \(v\). The weighted sum is the expected entropy after splitting.</p>
+<h4>Numerical example 2 – Information gain for Wind</h4>
+<p>Start with \(S=[9+,5-]\), so \(Entropy(S)=0.940\). There are 14 examples:</p>
+<table><tr><th>Wind</th><th>Positive</th><th>Negative</th><th>Subset</th><th>Entropy</th></tr>
+<tr><td>Weak</td><td>6</td><td>2</td><td>8</td><td>0.811</td></tr><tr><td>Strong</td><td>3</td><td>3</td><td>6</td><td>1.000</td></tr></table>
+<div class="formula">\[Entropy_{after}(S,Wind)=\frac{8}{14}(0.811)+\frac{6}{14}(1.000)\]</div>
+<div class="formula">\[=0.463+0.429=0.892\]</div>
+<div class="formula">\[Gain(S,Wind)=0.940-0.892=\boxed{0.048}\]</div>
+<p>Knowing Wind reduces uncertainty by approximately 0.048 bits for this sample.</p>
+<h3 id="id3">6. ID3 Algorithm and PlayTennis Example</h3>
+<p>ID3 (Iterative Dichotomiser 3) chooses the attribute with the highest information gain at each decision node.</p>
+<h4>Algorithm steps</h4><ol><li>Create a node for the current set of examples.</li><li>If all examples have the same class, make the node a leaf with that class.</li><li>If no attributes remain, make a leaf with the majority class.</li><li>Calculate information gain for every available attribute.</li><li>Select the attribute with the highest gain.</li><li>Create one branch for each value of that attribute and recursively apply the procedure to each subset.</li></ol>
+<h4>PlayTennis dataset</h4>
+<p>The standard dataset contains 14 Saturday-morning examples. The target is PlayTennis (Yes/No), and the candidate attributes are Outlook, Temperature, Humidity and Wind.</p>
+<table><tr><th>Attribute</th><th>Information Gain (approx.)</th></tr><tr><td>Outlook</td><td><strong>0.246</strong></td></tr><tr><td>Humidity</td><td>0.151</td></tr><tr><td>Wind</td><td>0.048</td></tr><tr><td>Temperature</td><td>0.029</td></tr></table>
+<p>Outlook has the largest information gain, so it becomes the root node. The Overcast subset contains only positive examples and becomes a Yes leaf. The Sunny and Rain subsets contain mixed examples and are further split. The final tree is:</p>
+<div class="tree-figure">
+<div class="label">Final PlayTennis decision tree (ID3)</div>
+<svg class="decision-tree" viewBox="0 0 1000 410" role="img" aria-labelledby="pt-title pt-desc">
+<title id="pt-title">PlayTennis decision tree</title>
+<desc id="pt-desc">Outlook is the root. Overcast predicts Yes. Sunny tests Humidity: High predicts No and Normal predicts Yes. Rain tests Wind: Strong predicts No and Weak predicts Yes.</desc>
+<defs>
+  <style>
+    .tree-edge{stroke:#64748b;stroke-width:3;fill:none}
+    .tree-node{fill:#eaf2ff;stroke:#315b9a;stroke-width:2.5}
+    .tree-leaf-yes{fill:#e8f6ed;stroke:#27834a;stroke-width:2.5}
+    .tree-leaf-no{fill:#fff0ee;stroke:#c44b42;stroke-width:2.5}
+    .tree-main{font: bold 22px Arial,sans-serif;fill:#17365d;text-anchor:middle}
+    .tree-leaf-text{font:bold 20px Arial,sans-serif;fill:#17365d;text-anchor:middle}
+    .tree-branch{font: bold 17px Arial,sans-serif;fill:#334155;text-anchor:middle}
+    .tree-sub{font:15px Arial,sans-serif;fill:#475569;text-anchor:middle}
+  </style>
+</defs>
+<!-- Connectors -->
+<path class="tree-edge" d="M500 78 L180 168 M500 78 L500 168 M500 78 L820 168"/>
+<path class="tree-edge" d="M180 222 L100 320 M180 222 L300 320"/>
+<path class="tree-edge" d="M820 222 L700 320 M820 222 L900 320"/>
+<!-- Root and second-level tests -->
+<rect class="tree-node" x="405" y="25" width="190" height="54" rx="12"/>
+<text class="tree-main" x="500" y="59">Outlook</text>
+<rect class="tree-node" x="95" y="168" width="170" height="54" rx="12"/>
+<text class="tree-main" x="180" y="202">Humidity</text>
+<rect class="tree-leaf-yes" x="415" y="168" width="170" height="54" rx="12"/>
+<text class="tree-leaf-text" x="500" y="202">Yes</text>
+<rect class="tree-node" x="735" y="168" width="170" height="54" rx="12"/>
+<text class="tree-main" x="820" y="202">Wind</text>
+<!-- Branch labels from root -->
+<text class="tree-branch" x="300" y="112">Sunny</text>
+<text class="tree-branch" x="500" y="137">Overcast</text>
+<text class="tree-branch" x="700" y="112">Rain</text>
+<!-- Leaves -->
+<rect class="tree-leaf-no" x="20" y="320" width="160" height="58" rx="12"/>
+<text class="tree-leaf-text" x="100" y="345">No</text><text class="tree-sub" x="100" y="365">High humidity</text>
+<rect class="tree-leaf-yes" x="220" y="320" width="160" height="58" rx="12"/>
+<text class="tree-leaf-text" x="300" y="345">Yes</text><text class="tree-sub" x="300" y="365">Normal humidity</text>
+<rect class="tree-leaf-no" x="620" y="320" width="160" height="58" rx="12"/>
+<text class="tree-leaf-text" x="700" y="345">No</text><text class="tree-sub" x="700" y="365">Strong wind</text>
+<rect class="tree-leaf-yes" x="820" y="320" width="160" height="58" rx="12"/>
+<text class="tree-leaf-text" x="900" y="345">Yes</text><text class="tree-sub" x="900" y="365">Weak wind</text>
+<!-- Branch labels from second-level tests -->
+<text class="tree-branch" x="115" y="275">High</text>
+<text class="tree-branch" x="265" y="275">Normal</text>
+<text class="tree-branch" x="675" y="275">Strong</text>
+<text class="tree-branch" x="875" y="275">Weak</text>
+</svg>
+<div class="tree-key"><span><b>Blue:</b> decision/test node</span><span><b>Green:</b> Yes leaf</span><span><b>Red:</b> No leaf</span></div>
+</div>
+<h4>Convert tree paths into rules</h4>
+<ul><li>IF Outlook = Overcast THEN PlayTennis = Yes.</li><li>IF Outlook = Sunny AND Humidity = Normal THEN PlayTennis = Yes.</li><li>IF Outlook = Sunny AND Humidity = High THEN PlayTennis = No.</li><li>IF Outlook = Rain AND Wind = Weak THEN PlayTennis = Yes.</li><li>IF Outlook = Rain AND Wind = Strong THEN PlayTennis = No.</li></ul>
+<div class="activity"><div class="label">Classroom exercise</div>Predict PlayTennis for (Outlook=Sunny, Temperature=Cool, Humidity=High, Wind=Strong). Follow the tree: Outlook Sunny → Humidity High → No. Temperature and Wind are not needed on this path.</div>
+<h3 id="searchtree">7. Hypothesis-Space Search in Decision Tree Learning</h3>
+<p>ID3 searches the space of possible decision trees. It begins with a simple tree and progressively adds tests, using information gain as a heuristic. This is a greedy hill-climbing search from simple to more complex hypotheses.</p>
+<ul><li>The hypothesis space consists of possible decision trees.</li><li>With the available attributes, decision trees can represent every finite discrete-valued function over those attributes.</li><li>ID3 maintains one current hypothesis rather than all consistent hypotheses.</li><li>In its basic form, ID3 does not backtrack after selecting an attribute at a node.</li><li>It uses all examples at each node to make a statistical choice, which can make it less sensitive to individual noisy examples.</li></ul>
+<h3>8. Inductive Bias in Decision Tree Learning</h3>
+<p>Usually, many decision trees can fit the same training examples. The inductive bias describes why the algorithm prefers one consistent tree over another.</p>
+<p>The approximate bias of ID3 is:</p><ol><li>Prefer shorter trees over longer trees.</li><li>Prefer trees that place high-information-gain attributes near the root.</li></ol>
+<p>ID3 is a greedy approximation to a search for a short tree. It uses a heuristic rather than enumerating all trees.</p>
+<h4>Restriction bias versus preference bias</h4>
+<table><tr><th>Preference bias (ID3)</th><th>Restriction bias (Candidate-Elimination in the slide comparison)</th></tr>
+<tr><td>Prefers some hypotheses over others, such as shorter trees.</td><td>Restricts the set of hypotheses that can be represented.</td></tr><tr><td>Bias comes from the search strategy.</td><td>Bias comes from the hypothesis representation.</td></tr><tr><td>Uses a preference among candidate trees.</td><td>Searches its specified hypothesis space for all consistent hypotheses.</td></tr></table>
+<h4>Occam’s Razor – Why prefer short hypotheses?</h4>
+<p>Occam’s Razor recommends preferring the simplest hypothesis that fits the data. A very large tree can memorize accidental details in a small training set. A shorter tree is often less likely to fit the training data merely by coincidence and may generalize better. Simplicity is a useful preference, not a guarantee of correctness.</p>
+<h3 id="overfit">9. Issues in Decision Tree Learning</h3>
+<h4>A. Overfitting</h4>
+<p>Overfitting occurs when a tree captures noise or accidental details in the training examples. It may achieve very high training accuracy but perform poorly on unseen examples. The slides identify small training sets and noisy data as common causes.</p>
+<h4>B. Reduced-error pruning</h4>
+<p>Use a separate validation set. Consider replacing a subtree with a leaf labelled by the majority class at that node. Keep the replacement if validation performance does not become worse (or improves). This reduces unnecessary branches.</p>
+<h4>C. Rule post-pruning</h4>
+<p>Convert the decision tree into rules, then consider removing conditions from each rule. Retain a simplified rule when its estimated performance is at least as good on validation data. The pruned rules may be easier to understand.</p>
+<h4>D. Other issues listed in the slides</h4><ul><li>Incorporating continuous-valued attributes by choosing suitable threshold tests.</li><li>Alternative attribute-selection measures.</li><li>Handling missing attribute values.</li><li>Handling attributes with different measurement or acquisition costs.</li></ul>
+<div class="warning"><strong>Slide coverage note:</strong> Your slides list these issues and name reduced-error pruning and rule post-pruning. The detailed pruning explanations above are brief teaching expansions to clarify the listed terms.</div>
+</section>
+
+<section id="eval"><h2>B. EVALUATING HYPOTHESES</h2>
+<h3>10. Motivation</h3>
+<p>Evaluating a learned hypothesis helps us decide whether it is useful and is also part of many learning algorithms. When data is limited, two difficulties arise:</p><ul><li><strong>Bias in the estimate:</strong> the evaluation procedure systematically gives an estimate that differs from future performance. Testing on examples independent of training helps avoid this.</li><li><strong>Variance in the estimate:</strong> measured accuracy changes depending on which random test examples happen to be selected. Small test sets usually produce greater variability.</li></ul>
+<h3 id="errors">11. Sample Error and True Error</h3>
+<p>The <strong>sample error</strong> of hypothesis \(h\) over a sample \(S\) is the fraction of examples it misclassifies:</p>
+<div class="formula">\[\widehat{error}_S(h)=\frac{\text{number of misclassified examples in }S}{|S|}\]</div>
+<p>The <strong>true error</strong> is the probability that \(h\) misclassifies a randomly drawn instance from the underlying distribution \(D\):</p>
+<div class="formula">\[error_D(h)=P_{x\sim D}[h(x)\ne f(x)]\]</div>
+<h4>Numerical example</h4><p>If a hypothesis misclassifies 7 out of 33 test examples:</p><div class="formula">\[\widehat{error}_S(h)=\frac{7}{33}=0.2121\approx21.21\%\]</div>
+<p>This is the observed sample error. It estimates, but is not necessarily equal to, the true future error.</p>
+<h3 id="sampling">12. Basics of Sampling Theory</h3>
+<p>Suppose we repeatedly draw independent random samples of size \(n\) from a population. The measured sample error changes from sample to sample. Therefore sample error is a random variable.</p>
+<h4>Binomial distribution</h4>
+<p>For a fixed hypothesis, each independent test example is either classified correctly or incorrectly. If the true error probability is \(p\), the number of errors \(R\) in \(n\) examples follows a binomial distribution:</p>
+<div class="formula">\[P(R=r)=\binom nr p^r(1-p)^{n-r}\]</div>
+<p>For the sample error \(\hat p=R/n\):</p>
+<div class="formula">\[E[\hat p]=p,\qquad Var(\hat p)=\frac{p(1-p)}{n}\]</div>
+<div class="formula">\[SD(\hat p)=\sqrt{\frac{p(1-p)}{n}}\]</div>
+<p>The sample error is an estimator of the true error. An estimator is unbiased when its expected value equals the parameter being estimated. Lower variance is desirable because repeated estimates fluctuate less.</p>
+<h3 id="ci">13. Confidence Intervals</h3>
+<p>A confidence interval gives a range of plausible values for an unknown parameter using a stated confidence procedure. For a discrete-valued hypothesis, the slides use an approximate normal interval for the true error:</p>
+<div class="formula">\[\hat p\ \pm\ z_{\alpha/2}\sqrt{\frac{\hat p(1-\hat p)}{n}}\]</div>
+<p>For an approximate 95% two-sided interval, \(z_{\alpha/2}\approx1.96\).</p>
+<h4>Numerical example – n = 40 and r = 12</h4><ol><li>Sample error: \(\hat p=12/40=0.30\).</li><li>Standard error estimate: \(\sqrt{0.30(0.70)/40}=\sqrt{0.00525}\approx0.0725\).</li><li>Margin: \(1.96(0.0725)\approx0.142\).</li></ol>
+<div class="formula">\[95\%~CI\approx0.30\pm0.142=[0.158,0.442]\]</div>
+<p>Rounded to two decimal places, the interval is approximately 0.16 to 0.44. In repeated use of this procedure under its assumptions, about 95% of such intervals would contain the true error. It does not mean there is a 95% probability that this fixed parameter lies in this already calculated interval.</p>
+<div class="warning"><div class="label">Assumptions and limitations</div>The approximation is intended for discrete-valued hypotheses, randomly drawn independent examples from the same distribution as future cases, and test data independent of the hypothesis. The slides note that the normal approximation is generally more reliable for sufficiently large samples (rule of thumb \(n\ge30\)) and when the estimated error is not too close to 0 or 1. For small samples or extreme proportions, use a more suitable interval method.</div>
+<h3>14. Sampling Theory – Central Limit Theorem</h3>
+<p>The Central Limit Theorem says that, under suitable conditions, the distribution of a sample mean becomes approximately normal as sample size grows, even when the original observations are not normally distributed. This is why a normal approximation can be used for many confidence intervals when the sample is sufficiently large.</p>
+<h3>15. One-sided and Two-sided Bounds</h3>
+<p>A two-sided interval provides both a lower and an upper bound. A one-sided interval gives only one bound, for example an upper bound on the true error. Under the normal approximation, a two-sided 95% interval corresponds to a one-sided upper bound at 97.5% confidence when using the same upper endpoint.</p>
+<p>Using the previous example, the upper endpoint is approximately \(0.30+0.14=0.44\). Thus the slide’s one-sided interpretation gives an approximate 97.5% upper confidence bound of 0.44, under the same assumptions.</p>
+<h3 id="difference">16. Difference in Error of Two Hypotheses</h3>
+<p>Suppose \(h_1\) and \(h_2\) are tested on independent samples of sizes \(n_1,n_2\), with observed errors \(\hat p_1,\hat p_2\). The estimated difference is:</p>
+<div class="formula">\[\hat d=\hat p_1-\hat p_2\]</div>
+<p>For sufficiently large independent samples, an approximate standard error is:</p>
+<div class="formula">\[SE(\hat d)=\sqrt{\frac{\hat p_1(1-\hat p_1)}{n_1}+\frac{\hat p_2(1-\hat p_2)}{n_2}}\]</div>
+<div class="formula">\[\hat d\pm z_{\alpha/2}SE(\hat d)\]</div>
+<h4>Numerical example</h4><p>Suppose \(n_1=n_2=100\), \(\hat p_1=0.30\) and \(\hat p_2=0.20\).</p>
+<div class="formula">\[\hat d=0.30-0.20=0.10\]</div>
+<div class="formula">\[SE=\sqrt{\frac{0.3(0.7)}{100}+\frac{0.2(0.8)}{100}}\approx0.0608\]</div>
+<div class="formula">\[95\%~CI=0.10\pm1.96(0.0608)\approx[-0.019,0.219]\]</div>
+<p>Because this approximate interval includes zero, the observed 0.10 difference alone is not enough to establish a difference at the 95% two-sided confidence level.</p>
+<div class="warning">The preceding formula assumes independent test samples. If two hypotheses are evaluated on the same examples, their errors are paired and the dependence must be considered; do not automatically use the independent-sample formula.</div>
+<h3>17. Comparing Learning Algorithms</h3>
+<p>Sometimes the question is not which of two fixed hypotheses is better, but which learning algorithm performs better on average. The comparison should account for variation caused by the choice of training sets and test examples.</p>
+<p>A practical classroom procedure is:</p><ol><li>Choose the same target task and evaluation metric.</li><li>Repeat training and evaluation using multiple independent or carefully designed data splits.</li><li>Record the test error for each algorithm on each run.</li><li>Compare average performance and variability, rather than relying on a single split.</li><li>Use a suitable statistical comparison that respects whether the runs or test examples are paired.</li></ol>
+<div class="warning"><strong>Slide coverage note:</strong> The PDF introduces comparison of learning algorithms but provides limited detail after the heading. The procedure above is a practical teaching explanation, not a transcription of a complete algorithm from the slides.</div>
+</section>
+
+<section id="bayes"><h2>C. BAYESIAN LEARNING</h2>
+<h3>18. Introduction to Bayesian Learning</h3>
+<p>Bayesian learning applies probability theory to learning. It calculates probabilities for hypotheses and updates those probabilities when data is observed. It can combine prior knowledge with evidence and can combine predictions from multiple hypotheses.</p>
+<h4>Strengths</h4><ul><li>It combines prior knowledge and observed data.</li><li>It can represent uncertainty rather than immediately eliminating every imperfect hypothesis.</li><li>It can make probabilistic predictions.</li><li>It provides a principled benchmark for decision-making.</li></ul>
+<h4>Practical difficulties</h4><ul><li>Prior and conditional probabilities may not be known and must be estimated.</li><li>Computing the posterior for a very large hypothesis space can be expensive.</li></ul>
+<h3 id="bayesrule">19. Bayes’ Theorem</h3>
+<p>Let \(h\) be a hypothesis and \(D\) the observed data:</p>
+<div class="formula">\[P(h\mid D)=\frac{P(D\mid h)P(h)}{P(D)}\]</div>
+<table><tr><th>Term</th><th>Meaning</th></tr><tr><td>\(P(h)\)</td><td>Prior probability of hypothesis h before observing D.</td></tr><tr><td>\(P(D\mid h)\)</td><td>Likelihood: probability of observing D if h is true.</td></tr><tr><td>\(P(D)\)</td><td>Evidence or marginal probability of D.</td></tr><tr><td>\(P(h\mid D)\)</td><td>Posterior probability after observing D.</td></tr></table>
+<p>The posterior increases with a larger prior or likelihood, all else equal. The evidence normalizes the posterior probabilities so that they sum to one.</p>
+<h3>20. Medical Diagnosis – Bayes’ Theorem Numerical Example</h3>
+<p>Your slides use a medical test example. Let:</p><ul><li>Prevalence: \(P(C)=0.008\) (0.8%).</li><li>Sensitivity: \(P(+\mid C)=0.98\) (98%).</li><li>Specificity: \(P(-\mid\neg C)=0.97\), so false-positive rate \(P(+\mid\neg C)=0.03\).</li></ul>
+<p>Question: If a patient receives a positive result, what is the probability that the patient actually has the disease?</p>
+<div class="formula">\[P(C\mid +)=\frac{P(+\mid C)P(C)}{P(+\mid C)P(C)+P(+\mid\neg C)P(\neg C)}\]</div>
+<p>Substitute:</p><div class="formula">\[P(C\mid +)=\frac{0.98(0.008)}{0.98(0.008)+0.03(0.992)}\]</div>
+<div class="formula">\[=\frac{0.00784}{0.00784+0.02976}=\frac{0.00784}{0.03760}\]</div>
+<div class="takeaway"><strong>Posterior probability ≈ 0.2085 = 20.85%.</strong> Despite a 98% sensitivity and 97% specificity, a positive test in this low-prevalence population gives a posterior probability of about 20.85% under the stated assumptions. This illustrates the base-rate effect.</div>
+<h4>Explain with 10,000 people</h4><table><tr><th>Group</th><th>Number</th><th>Positive tests</th></tr><tr><td>Have disease (0.8%)</td><td>80</td><td>78.4 expected true positives</td></tr><tr><td>Do not have disease</td><td>9,920</td><td>297.6 expected false positives</td></tr><tr><td>Total positive</td><td>—</td><td>376</td></tr></table>
+<p>Expected fraction of positive tests that are true positives: \(78.4/376=20.85\%\). Fractional counts are expected values, not literal partial people.</p>
+<div class="warning">This is a textbook probability illustration, not an interpretation of any individual's medical result. Actual clinical testing and diagnosis require professional interpretation and context.</div>
+<h3>21. MAP and Maximum Likelihood Hypotheses</h3>
+<p>A maximum a posteriori (MAP) hypothesis is a hypothesis with the highest posterior probability:</p>
+<div class="formula">\[h_{MAP}=\arg\max_{h\in H}P(h\mid D)\]</div>
+<p>Using Bayes’ theorem:</p><div class="formula">\[h_{MAP}=\arg\max_{h\in H}P(D\mid h)P(h)\]</div>
+<p>A maximum likelihood (ML) hypothesis maximizes the likelihood:</p><div class="formula">\[h_{ML}=\arg\max_{h\in H}P(D\mid h)\]</div>
+<p>If all hypotheses have equal prior probability, a MAP hypothesis is also an ML hypothesis.</p>
+<h3 id="conceptbayes">22. Bayes Theorem and Concept Learning</h3>
+<p>Consider a finite hypothesis space \(H\), instance space \(X\), target concept \(c:X\to\{0,1\}\), and noise-free training data \(D\).</p>
+<p>Under the assumptions in the slides—uniform prior over hypotheses, target concept contained in H, and noise-free labels—the likelihood is:</p>
+<div class="formula">\[P(D\mid h)=\begin{cases}1,&h\text{ is consistent with }D\\0,&h\text{ is inconsistent with }D\end{cases}\]</div>
+<p>Therefore inconsistent hypotheses receive posterior probability zero. Every consistent hypothesis receives equal posterior probability under a uniform prior:</p>
+<div class="formula">\[P(h\mid D)=\begin{cases}\frac{1}{|VS_{H,D}|},&h\in VS_{H,D}\\0,&h\notin VS_{H,D}\end{cases}\]</div>
+<p>Thus every hypothesis in the version space is a MAP hypothesis under these assumptions. A consistent learner returns a hypothesis with zero training error. The slides connect this interpretation to Find-S and Candidate-Elimination.</p>
+<h3 id="ml">23. Maximum Likelihood and Least-Squared-Error Hypotheses</h3>
+<p>For a continuous-valued target, suppose each training target is corrupted by independent, zero-mean Gaussian noise:</p>
+<div class="formula">\[d_i=f(x_i)+e_i,\qquad e_i\sim N(0,\sigma^2)\]</div>
+<p>The likelihood of the observed data is maximized by the hypothesis that minimizes the sum of squared errors:</p>
+<div class="formula">\[h_{ML}=\arg\min_{h\in H}\sum_{i=1}^{m}(d_i-h(x_i))^2\]</div>
+<h4>Numerical example – Least-squares error</h4>
+<p>Suppose actual values are \(d=[3,5,7]\), and a model predicts \(\hat d=[2,5,8]\).</p>
+<table><tr><th>i</th><th>Actual \(d_i\)</th><th>Predicted \(h(x_i)\)</th><th>Error</th><th>Squared error</th></tr><tr><td>1</td><td>3</td><td>2</td><td>1</td><td>1</td></tr><tr><td>2</td><td>5</td><td>5</td><td>0</td><td>0</td></tr><tr><td>3</td><td>7</td><td>8</td><td>-1</td><td>1</td></tr></table>
+<div class="formula">\[SSE=(3-2)^2+(5-5)^2+(7-8)^2=1+0+1=2\]</div>
+<p>The sum of squared errors is 2. Under the independent Gaussian-noise assumption with common variance, minimizing SSE is equivalent to maximizing likelihood.</p>
+<h3>24. Maximum Likelihood for Predicting Probabilities</h3>
+<p>Sometimes the target is probabilistic. For example, patients with the same recorded features may have different outcomes because not all relevant factors are observed. A model may predict \(p_i=P(d_i=1\mid x_i)\).</p>
+<p>For independent binary observations, the likelihood is:</p>
+<div class="formula">\[P(D\mid h)=\prod_{i=1}^{m}p_i^{d_i}(1-p_i)^{1-d_i}\]</div>
+<p>Taking the logarithm gives the log-likelihood:</p>
+<div class="formula">\[\log P(D\mid h)=\sum_i[d_i\log p_i+(1-d_i)\log(1-p_i)]\]</div>
+<p>Maximizing this expression is equivalent to minimizing the negative log-likelihood, also called cross-entropy for binary outcomes:</p>
+<div class="formula">\[L=-\sum_i[d_i\log p_i+(1-d_i)\log(1-p_i)]\]</div>
+<p>The slides connect likelihood maximization for neural networks with gradient ascent and the backpropagation update rule. The important conceptual point is that squared error corresponds to a Gaussian-noise assumption, whereas cross-entropy is appropriate for probabilistic binary predictions.</p>
+<h3 id="mdL">25. Minimum Description Length (MDL) Principle</h3>
+<p>MDL is closely related to Occam’s Razor: choose the explanation that gives the shortest total description of the hypothesis and the data not explained by it.</p>
+<div class="formula">\[h_{MDL}=\arg\min_h\big[L(h)+L(D\mid h)\big]\]</div>
+<p>Here \(L(h)\) is the number of bits needed to encode the hypothesis, and \(L(D\mid h)\) is the number of bits needed to encode the data given the hypothesis.</p>
+<p>A complex hypothesis may describe the training data closely but require many bits to describe. A simple hypothesis may be shorter but leave more residual errors to encode. MDL balances these two costs.</p>
+<p>With the coding lengths \(L(h)=-\log_2P(h)\) and \(L(D\mid h)=-\log_2P(D\mid h)\), minimizing total description length is equivalent to maximizing the posterior probability, and therefore produces a MAP hypothesis.</p>
+<h3 id="optimal">26. Bayes Optimal Classifier</h3>
+<p>The MAP method selects the single most probable hypothesis. The Bayes optimal classifier instead combines predictions from all hypotheses, weighted by their posterior probabilities.</p>
+<div class="formula">\[P(v\mid x,D)=\sum_{h\in H}P(v\mid x,h)P(h\mid D)\]</div>
+<p>For deterministic hypotheses, each hypothesis votes for a class, weighted by its posterior probability.</p>
+<h4>Numerical example</h4>
+<p>Suppose three hypotheses have posterior probabilities 0.4, 0.3 and 0.3. For a new instance \(x\), \(h_1\) predicts Positive, while \(h_2\) and \(h_3\) predict Negative.</p>
+<table><tr><th>Hypothesis</th><th>Posterior probability</th><th>Prediction</th></tr><tr><td>h1</td><td>0.4</td><td>Positive</td></tr><tr><td>h2</td><td>0.3</td><td>Negative</td></tr><tr><td>h3</td><td>0.3</td><td>Negative</td></tr></table>
+<p>Weighted probability of Positive = 0.4. Weighted probability of Negative = 0.3 + 0.3 = 0.6. Therefore the Bayes optimal classification is <strong>Negative</strong>, even though the MAP hypothesis \(h_1\) predicts Positive.</p>
+<h3>27. Gibbs Algorithm</h3>
+<p>The Bayes optimal classifier can be computationally expensive because it combines predictions from every hypothesis. The Gibbs algorithm provides a simpler alternative:</p><ol><li>Calculate or obtain the posterior distribution over hypotheses.</li><li>Randomly select one hypothesis according to that posterior distribution.</li><li>Use the selected hypothesis to classify the new instance.</li></ol>
+<p>The slides state that, under the relevant assumptions, the expected misclassification error of Gibbs is at most twice that of the Bayes optimal classifier. The advantage is lower computational cost; the disadvantage is that an individual random draw may vary.</p>
+<h3 id="naive">28. Naïve Bayes Classifier</h3>
+<p>Naïve Bayes applies Bayes’ theorem using a simplifying conditional-independence assumption: given the class, the attributes are treated as conditionally independent.</p>
+<div class="formula">\[P(C\mid x_1,\ldots,x_n)\propto P(C)\prod_{i=1}^{n}P(x_i\mid C)\]</div>
+<p>For classification, calculate this quantity for each class and choose the class with the larger posterior score. The proportionality is sufficient when comparing classes because the evidence \(P(x)\) is common to all classes.</p>
+<h4>Naïve Bayes steps</h4><ol><li>Calculate prior class probabilities.</li><li>Calculate conditional probabilities of each attribute value given each class.</li><li>For a new instance, multiply the prior by the relevant conditional probabilities.</li><li>Compare the class scores and select the largest.</li></ol>
+<h4>Worked example – PlayTennis query</h4>
+<p>Query: Outlook = Sunny, Temperature = Cool, Humidity = High, Wind = Strong. Use the standard 14-example PlayTennis dataset: 9 Yes and 5 No.</p>
+<table><tr><th>Probability</th><th>Yes class</th><th>No class</th></tr><tr><td>Prior</td><td>9/14</td><td>5/14</td></tr><tr><td>P(Sunny | class)</td><td>2/9</td><td>3/5</td></tr><tr><td>P(Cool | class)</td><td>3/9</td><td>1/5</td></tr><tr><td>P(High | class)</td><td>3/9</td><td>4/5</td></tr><tr><td>P(Strong | class)</td><td>3/9</td><td>3/5</td></tr></table>
+<p>Score for Yes:</p><div class="formula">\[P(Yes)\prod_iP(x_i\mid Yes)=\frac9{14}\frac29\frac39\frac39\frac39\approx0.00529\]</div>
+<p>Score for No:</p><div class="formula">\[P(No)\prod_iP(x_i\mid No)=\frac5{14}\frac35\frac15\frac45\frac35\approx0.02057\]</div>
+<p>Normalize the two scores:</p><div class="formula">\[P(Yes\mid x)\approx\frac{0.00529}{0.00529+0.02057}\approx0.205\]</div>
+<div class="takeaway"><strong>Prediction: PlayTennis = No.</strong> The No class has the larger posterior score (approximately 0.795 after normalization).</div>
+<h3>29. Estimating Probabilities and the m-estimate</h3>
+<p>A simple estimate of a conditional probability is the observed fraction:</p>
+<div class="formula">\[P(X=v\mid C)\approx\frac{n_c}{n}\]</div>
+<p>When \(n\) is small, this estimate can be unreliable. If \(n_c=0\), the estimated probability becomes zero and can force the entire Naïve Bayes class score to zero. The slides introduce the m-estimate to combine observed frequency with a prior estimate:</p>
+<div class="formula">\[P(X=v\mid C)\approx\frac{n_c+mp}{n+m}\]</div>
+<p>Here \(n_c\) is the number of occurrences of the value among the \(n\) examples in class C, \(p\) is the prior probability estimate, and \(m\) is the equivalent sample size. If an attribute has \(k\) possible values and a uniform prior is used, \(p=1/k\).</p>
+<h4>Numerical example</h4><p>Suppose among 5 No examples, Wind=Strong occurs 3 times. Use \(p=0.5\) and \(m=2\):</p>
+<div class="formula">\[P(Strong\mid No)\approx\frac{3+2(0.5)}{5+2}=\frac47\approx0.571\]</div>
+<p>Without smoothing, the estimate is \(3/5=0.60\). The m-estimate moves the estimate toward the prior value 0.5. If \(m=0\), it reduces to the observed fraction.</p>
+<h3 id="text">30. Naïve Bayes for Text Classification</h3>
+<p>The slides describe a document classification task in which the possible classes are “like” and “dislike.” A document is represented using word attributes, such as whether a word occurs or how often it occurs.</p>
+<p>Example from the slides: 700 training documents are labelled Dislike and 300 are labelled Like. Therefore:</p>
+<div class="formula">\[P(Dislike)=0.7,\qquad P(Like)=0.3\]</div>
+<p>For a new document, estimate word likelihoods for each class, combine them with the class prior, and select the larger posterior score. The slide also reports an experimental study using 20 newsgroups, 20,000 documents, two-thirds for training and one-third for testing, with 89% reported accuracy and a vocabulary of approximately 38,500 words.</p>
+<div class="warning">The 89% is the experimental result reported in the supplied slides for that particular dataset and setup; it is not a general guarantee for Naïve Bayes.</div>
+<h3 id="bbn">31. Bayesian Belief Networks</h3>
+<p>A Bayesian belief network represents a joint probability distribution over a set of variables using a directed acyclic graph (DAG). Nodes represent random variables; directed edges represent direct probabilistic dependencies. Each node is associated with a conditional probability table given its parent nodes.</p>
+<h4>Conditional independence</h4>
+<p>Variables X and Y are conditionally independent given Z when knowing Y provides no additional information about X once Z is known:</p>
+<div class="formula">\[P(X\mid Y,Z)=P(X\mid Z)\]</div>
+<p>Naïve Bayes uses a strong conditional-independence assumption: all attributes are conditionally independent of one another given the class. Bayesian networks allow more general dependency structures.</p>
+<div class="info"><div class="label">Example</div>For a simplified educational network, Disease may influence Symptoms and TestResult. Symptoms and TestResult may be related through the common parent Disease. A Bayesian network represents these relationships and supports probability queries when its conditional tables are specified.</div>
+<h3>32. EM Algorithm – Scope in the supplied slides</h3>
+<p>The Unit II contents slide lists the EM (Expectation-Maximization) algorithm under Bayesian Learning. However, the supplied PDF ends after introducing Bayesian belief networks and conditional independence; it does not provide a detailed EM explanation or worked example.</p>
+<p>For syllabus awareness, EM is a general iterative method for estimating model parameters when data include hidden or latent variables or incomplete information. It alternates between:</p><ol><li><strong>Expectation (E) step:</strong> estimate the expected values or responsibilities of hidden variables using current parameter estimates.</li><li><strong>Maximization (M) step:</strong> update parameters to maximize the expected complete-data log-likelihood.</li></ol>
+<div class="warning">This EM summary is supplementary background, not detailed material extracted from the uploaded slides. Add the relevant textbook pages or slides if you want a full derivation and numerical example aligned with your teaching material.</div>
+</section>
+
+<section id="revision"><h2>33. Unit II – Consolidated Revision</h2>
+<table><tr><th>Topic</th><th>Key formula / idea</th></tr>
+<tr><td>Entropy</td><td>\(H(S)=-\sum_i p_i\log_2p_i\)</td></tr><tr><td>Information gain</td><td>\(Gain(S,A)=H(S)-\sum_v\frac{|S_v|}{|S|}H(S_v)\)</td></tr>
+<tr><td>Sample error</td><td>\(\hat p=r/n\)</td></tr><tr><td>True error</td><td>\(P_{x\sim D}[h(x)\ne f(x)]\)</td></tr><tr><td>Approx. confidence interval</td><td>\(\hat p\pm z\sqrt{\hat p(1-\hat p)/n}\)</td></tr>
+<tr><td>Bayes theorem</td><td>\(P(h|D)=P(D|h)P(h)/P(D)\)</td></tr><tr><td>MAP</td><td>\(\arg\max_hP(D|h)P(h)\)</td></tr><tr><td>Maximum likelihood</td><td>\(\arg\max_hP(D|h)\)</td></tr>
+<tr><td>Least-squares</td><td>\(\arg\min_h\sum_i(d_i-h(x_i))^2\)</td></tr><tr><td>MDL</td><td>\(\min_h[L(h)+L(D|h)]\)</td></tr><tr><td>Naïve Bayes</td><td>\(P(C|x)\propto P(C)\prod_iP(x_i|C)\)</td></tr><tr><td>m-estimate</td><td>\((n_c+mp)/(n+m)\)</td></tr></table>
+<h3>Important Short-Answer Questions</h3><ol>
+<li>Define a decision tree. Explain root, internal nodes, branches and leaves.</li><li>What is entropy? What does zero entropy indicate?</li><li>Define information gain and state how ID3 uses it.</li><li>What is the inductive bias of ID3?</li><li>Differentiate preference bias and restriction bias.</li><li>What is overfitting? Name two pruning methods.</li><li>Define sample error and true error.</li><li>What are estimator bias and variance?</li><li>State the Central Limit Theorem in the context of sampling.</li><li>Differentiate MAP and maximum likelihood.</li><li>What is the MDL principle?</li><li>What is the conditional-independence assumption in Naïve Bayes?</li><li>What is an m-estimate?</li><li>Define a Bayesian belief network.</li></ol>
+<h3>Important Long-Answer / Numerical Questions</h3><ol>
+<li>Explain decision tree representation and the ID3 algorithm with the PlayTennis example.</li><li>Calculate entropy for a mixed set and information gain for an attribute.</li><li>Discuss hypothesis-space search and inductive bias in decision tree learning.</li><li>Explain overfitting and methods for pruning decision trees.</li><li>Calculate sample error and a 95% confidence interval for a hypothesis.</li><li>Explain sampling theory, binomial distribution, estimator bias and variance.</li><li>Derive an approximate confidence interval for the difference between two independent hypothesis errors.</li><li>Explain Bayes’ theorem and solve the medical-test diagnosis example.</li><li>Explain MAP and maximum likelihood with their relationship.</li><li>Show why least-squares error minimization corresponds to maximum likelihood under Gaussian noise.</li><li>Explain MDL, Bayes optimal classification and the Gibbs algorithm.</li><li>Explain Naïve Bayes with the PlayTennis or text-classification example.</li><li>Explain conditional independence and Bayesian belief networks.</li></ol>
+<div class="takeaway"><div class="label">Final teaching message</div>Decision trees explain how to construct interpretable classification rules. Evaluation theory explains how much confidence to place in a learned model’s measured performance. Bayesian learning explains how to combine prior beliefs and observed evidence probabilistically. Together, these topics address how to learn, how to evaluate, and how to reason under uncertainty.</div>
+</section>
+</main></div>
+</div></body></html>

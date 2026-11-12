@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit IV – Machine Learning Lecture Notes</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{--navy:#17365d;--blue:#245b8f;--teal:#087e8b;--ink:#202a35;--muted:#5d6b78;--line:#d8e1eb;--pale:#eef5fb;--amber:#fff6df;--green:#edf7f0}
+*{box-sizing:border-box}body{margin:0;background:#edf1f5;color:var(--ink);font:17px/1.6 "Times New Roman",serif}
+.shell{max-width:1160px;margin:24px auto;background:#fff;display:grid;grid-template-columns:250px minmax(0,1fr);box-shadow:0 8px 28px #1c35501a}
+nav{background:#f5f8fb;border-right:1px solid var(--line);padding:22px 17px;position:sticky;top:0;height:100vh;overflow:auto}
+nav h2{font-size:20px;color:var(--navy);margin:0 0 12px}nav a{display:block;color:#294b6b;text-decoration:none;padding:5px 8px;border-radius:5px;font-size:15px}nav a:hover{background:#e5eef7}
+main{padding:42px 54px 60px;min-width:0}.cover{padding:28px;border:1px solid var(--line);border-top:6px solid var(--navy);background:linear-gradient(135deg,#f7fbff,#fff);margin-bottom:30px}
+.kicker{color:var(--teal);font:bold 13px Arial,sans-serif;letter-spacing:1.5px;text-transform:uppercase}h1{font-size:35px;line-height:1.15;color:var(--navy);margin:8px 0}.subtitle{font-size:19px;color:var(--muted)}
+h2{font-size:27px;color:var(--navy);border-bottom:2px solid var(--line);padding-bottom:7px;margin:42px 0 16px}h3{font-size:21px;color:var(--blue);margin:27px 0 8px}h4{font-size:18px;color:#315b72;margin:18px 0 6px}
+p{margin:9px 0 13px}ul,ol{padding-left:26px}li{margin:5px 0}
+.eq{background:#f6f9fc;border-left:4px solid var(--teal);padding:12px 18px;margin:15px 0;overflow-x:auto}
+.callout{background:var(--pale);border:1px solid #d6e5f3;border-radius:8px;padding:13px 17px;margin:16px 0}
+.example{background:#fbfcfe;border:1px solid var(--line);border-radius:8px;padding:15px 18px;margin:16px 0}
+.note{background:var(--amber);border-left:4px solid #d69b20;padding:12px 16px;margin:16px 0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:16px}th,td{border:1px solid #ccd7e2;padding:8px 10px;text-align:left;vertical-align:top}th{background:#eaf1f8;color:#183b60}
+.small{font-size:15px;color:var(--muted)}.diagram{background:#fbfdff;border:1px solid var(--line);border-radius:8px;padding:14px;margin:16px 0;text-align:center;overflow-x:auto}.diagram svg{max-width:100%;height:auto}
+.steps{counter-reset:step;list-style:none;padding:0}.steps li{counter-increment:step;padding:8px 10px 8px 48px;position:relative;border-bottom:1px dashed var(--line)}.steps li:before{content:counter(step);position:absolute;left:7px;top:7px;background:var(--navy);color:#fff;border-radius:50%;width:27px;height:27px;text-align:center;line-height:27px;font-weight:bold}
+hr{border:0;border-top:1px solid var(--line);margin:30px 0}button{background:var(--navy);color:#fff;border:0;border-radius:6px;padding:9px 14px;cursor:pointer;font:15px "Times New Roman"}
+@media(max-width:850px){.shell{display:block;margin:0}nav{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:25px 20px}}
+@media print{body{background:#fff;font-size:12pt}.shell{display:block;max-width:none;margin:0;box-shadow:none}nav,button{display:none!important}main{padding:0 12mm}.cover{break-after:page}h2{break-after:avoid}h3{break-after:avoid}.example,.callout,.diagram,table{break-inside:avoid}a{color:inherit;text-decoration:none}}
+</style>
+</head>
+<body><div class="shell">
+<nav>
+<h2>Unit IV Contents</h2>
+<a href="#outcomes">Learning outcomes</a>
+<a href="#ga">A. Genetic Algorithms</a>
+<a href="#motivation">Motivation and principles</a>
+<a href="#representation">Representation</a>
+<a href="#operators">Genetic operators</a>
+<a href="#fitness">Fitness and selection</a>
+<a href="#gabil">GABIL example</a>
+<a href="#crowding">Search, crowding and schemas</a>
+<a href="#gp">Genetic programming</a>
+<a href="#evolution">Evolution and learning</a>
+<a href="#parallel">Parallel genetic algorithms</a>
+<a href="#ial">B. Combining Inductive and Analytical Learning</a>
+<a href="#problem">Learning problem</a>
+<a href="#kbann">KBANN</a>
+<a href="#tangent">TANGENTPROP and EBNN</a>
+<a href="#focl">FOCL</a>
+<a href="#revision">Revision questions</a>
+</nav>
+<main>
+<div class="cover">
+<div class="kicker">Machine Learning · Unit IV</div>
+<h1>Genetic Algorithms and Combining Inductive and Analytical Learning</h1>
+<div class="subtitle">Combined lecture notes based on the two uploaded Unit IV slide decks</div>
+<p><b>Course:</b> Machine Learning</p>
+<p><b>Unit coverage:</b> Genetic Algorithms; Combining Inductive and Analytical Learning</p>
+<p class="small">The notes follow the topics and terminology in the supplied slides. Explanatory examples are added for classroom understanding. Where a slide deck provides only a heading, the limitation is stated instead of inventing source-specific details.</p>
+</div>
+
+<section id="outcomes">
+<h2>Learning Outcomes</h2>
+<p>After studying this unit, students should be able to:</p>
+<ul>
+<li>Explain the biological-evolution analogy behind genetic algorithms.</li>
+<li>Describe population, chromosome, fitness, selection, crossover, mutation and generation.</li>
+<li>Represent hypotheses using bit strings and interpret attribute constraints.</li>
+<li>Calculate fitness-proportionate selection probabilities and perform a simple crossover.</li>
+<li>Explain GABIL, crowding, schemas, genetic programming, the Baldwin effect and parallel GAs.</li>
+<li>Differentiate inductive learning and analytical learning.</li>
+<li>Explain how domain knowledge can initialize a hypothesis, change the search objective or augment search operators.</li>
+<li>Describe KBANN, TANGENTPROP, EBNN and FOCL at the level presented in the slides.</li>
+</ul>
+</section>
+
+<section id="ga">
+<h2>A. Genetic Algorithms</h2>
+<section id="motivation">
+<h3>1. Motivation and Basic Idea</h3>
+<p>Genetic Algorithms (GAs) are learning and search methods motivated by biological evolution. They maintain a <b>population</b> of candidate hypotheses. In each generation, relatively fit hypotheses are more likely to contribute offspring. New hypotheses are created by recombining parts of parent hypotheses and by randomly mutating some parts.</p>
+<p>The population is updated repeatedly. Some members may survive directly, while others are replaced by offspring. The process continues until an acceptable fitness threshold is reached or another stopping condition is satisfied.</p>
+<div class="diagram">
+<svg viewBox="0 0 760 180" role="img" aria-label="Genetic algorithm cycle">
+<defs><marker id="gaarr" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0 0 L0 6 L9 3z" fill="#245b8f"/></marker></defs>
+<g fill="#eef5fb" stroke="#245b8f" stroke-width="2">
+<rect x="15" y="52" width="135" height="65" rx="8"/><rect x="170" y="52" width="135" height="65" rx="8"/><rect x="325" y="52" width="135" height="65" rx="8"/><rect x="480" y="52" width="120" height="65" rx="8"/><rect x="620" y="52" width="125" height="65" rx="8"/>
+</g>
+<g font-size="15" fill="#17365d" text-anchor="middle"><text x="82" y="80">Initial</text><text x="82" y="99">population</text><text x="237" y="80">Fitness</text><text x="237" y="99">evaluation</text><text x="392" y="80">Selection</text><text x="392" y="99">of parents</text><text x="540" y="80">Crossover</text><text x="540" y="99">and mutation</text><text x="682" y="80">New</text><text x="682" y="99">generation</text></g>
+<g stroke="#245b8f" stroke-width="2" marker-end="url(#gaarr)"><path d="M150 84 H165"/><path d="M305 84 H320"/><path d="M460 84 H475"/><path d="M600 84 H615"/></g>
+<path d="M682 120 C682 165 82 165 82 122" fill="none" stroke="#087e8b" stroke-width="2" marker-end="url(#gaarr)"/>
+<text x="382" y="157" fill="#087e8b" font-size="14" text-anchor="middle">Repeat until stopping condition</text>
+</svg>
+</div>
+<p>GAs are useful when the hypothesis space is large and contains complex interacting parts. They do not require a simple mathematical description of how each component affects overall fitness. The slides also highlight that GAs can be parallelized.</p>
+<table><tr><th>Biological analogy</th><th>Genetic algorithm meaning</th></tr>
+<tr><td>Organism</td><td>Candidate hypothesis / individual</td></tr><tr><td>Population</td><td>Collection of candidate hypotheses</td></tr><tr><td>Chromosome</td><td>Encoded representation of a hypothesis</td></tr><tr><td>Fitness</td><td>Quality or usefulness of a candidate</td></tr><tr><td>Reproduction</td><td>Selection of parents to create offspring</td></tr><tr><td>Crossover</td><td>Recombination of parent representations</td></tr><tr><td>Mutation</td><td>Random alteration of encoded components</td></tr><tr><td>Generation</td><td>One population-update cycle</td></tr></table>
+
+<h3>2. Main Components and Algorithm</h3>
+<p>The slide deck identifies four central parts: representing hypotheses, genetic operators, fitness function and selection. The algorithm also requires a population size, replacement fraction, mutation rate and acceptable fitness threshold.</p>
+<ol class="steps">
+<li>Generate an initial population of candidate hypotheses.</li>
+<li>Evaluate each candidate using the fitness function.</li>
+<li>Check whether the best candidate reaches the acceptable fitness threshold.</li>
+<li>Select members probabilistically for survival or reproduction.</li>
+<li>Generate offspring using crossover.</li>
+<li>Apply random mutation to a chosen fraction of the new population.</li>
+<li>Form the next generation and repeat.</li>
+</ol>
+<div class="callout"><b>Stopping condition:</b> A GA may stop when the fitness threshold is met. In practical implementations, a maximum number of generations or lack of improvement may also be used; these are general implementation choices, not additional details specified in the slides.</div>
+</section>
+
+<section id="representation">
+<h3>3. Representing Hypotheses</h3>
+<p>Hypotheses in GAs are often represented as bit strings because bit strings can be manipulated easily by crossover and mutation. A chromosome is an encoded candidate solution.</p>
+<p>The slides use the attribute <b>Outlook</b>, which can take three values: Sunny, Overcast and Rain. A three-bit substring can represent which values are allowed:</p>
+<table><tr><th>Bit string</th><th>Interpretation</th></tr>
+<tr><td>010</td><td>Outlook = Overcast only</td></tr>
+<tr><td>011</td><td>Outlook = Overcast OR Rain; a more general constraint</td></tr>
+<tr><td>111</td><td>Any Outlook value is allowed; “don't care” / most general constraint</td></tr></table>
+<p>In this representation, a 1 means that the corresponding attribute value is permitted, while a 0 means it is excluded. Changing a 0 to 1 relaxes a constraint and makes the hypothesis more general.</p>
+<div class="example"><b>Classroom check:</b> If the bit order is Sunny, Overcast, Rain, what does 101 mean? It permits Sunny or Rain and excludes Overcast.</div>
+
+<h3 id="operators">4. Genetic Operators</h3>
+<h4>4.1 Crossover</h4>
+<p>Crossover creates offspring by copying selected bit positions from two parent strings. The slides describe a <b>crossover mask</b> that determines which parent contributes each bit position.</p>
+<div class="example"><b>Worked crossover example</b>
+<p>Parent 1: <code>110010</code><br>Parent 2: <code>001101</code><br>Crossover mask: <code>101010</code></p>
+<p>Use Parent 1 where the mask is 1 and Parent 2 where it is 0:</p>
+<p>Offspring 1: <code>100000</code></p>
+<p>The complementary choice gives Offspring 2: <code>011111</code>.</p>
+<p>This demonstrates mask-based bit selection. Different mask conventions may label the two complementary offspring in the reverse order.</p></div>
+<h4>4.2 Mutation</h4>
+<p>Mutation randomly alters selected bits in a chromosome. For a binary representation, a common mutation is bit flipping: 0 becomes 1 or 1 becomes 0. Mutation introduces new variations that may not be present in the current population.</p>
+<div class="example"><b>Example:</b> Chromosome <code>101100</code>. If the fourth bit mutates, the new chromosome becomes <code>101000</code>.</div>
+<p>Crossover recombines existing information from parents; mutation introduces random changes. Both help explore the hypothesis space.</p>
+
+<h3 id="fitness">5. Fitness Function and Selection</h3>
+<p>The fitness function ranks candidate hypotheses. In the slide deck's prototype GA, fitness-proportionate selection assigns a candidate a probability proportional to its fitness.</p>
+<div class="eq">\[P(h_i\text{ selected})=\frac{Fitness(h_i)}{\sum_j Fitness(h_j)}\]</div>
+<p>This is also called <b>roulette-wheel selection</b>. A candidate with higher fitness receives a larger probability of selection, but a lower-fitness candidate may still be selected.</p>
+<div class="example"><b>Worked numerical example – roulette-wheel selection</b>
+<p>Suppose a population contains four hypotheses with fitness values 10, 20, 30 and 40. Total fitness = 100.</p>
+<table><tr><th>Hypothesis</th><th>Fitness</th><th>Selection probability</th></tr>
+<tr><td>H1</td><td>10</td><td>10/100 = 0.10 (10%)</td></tr><tr><td>H2</td><td>20</td><td>20/100 = 0.20 (20%)</td></tr><tr><td>H3</td><td>30</td><td>30/100 = 0.30 (30%)</td></tr><tr><td>H4</td><td>40</td><td>40/100 = 0.40 (40%)</td></tr></table>
+<p>H4 is most likely to be selected, but selection is probabilistic rather than guaranteed.</p></div>
+<h4>Other selection methods</h4>
+<ul><li><b>Tournament selection:</b> choose two hypotheses randomly. With probability \(p\), select the fitter one; with probability \(1-p\), select the less fit one. The slides note that tournament selection can preserve more population diversity than roulette-wheel selection.</li>
+<li><b>Rank selection:</b> sort candidates by fitness and assign selection probability according to rank rather than raw fitness.</li></ul>
+
+<h3 id="gabil">6. Illustrative Example – GABIL</h3>
+<p><b>GABIL</b> uses a genetic algorithm to learn Boolean concepts represented by a disjunctive set of propositional rules. The slide deck states that it uses the prototype GA described earlier.</p>
+<h4>Parameters reported in the slides</h4>
+<table><tr><th>Parameter</th><th>Reported setting</th><th>Meaning</th></tr>
+<tr><td>\(r\)</td><td>0.6</td><td>Fraction of parent population replaced by crossover</td></tr>
+<tr><td>\(m\)</td><td>0.001</td><td>Mutation rate</td></tr>
+<tr><td>\(p\)</td><td>100 to 1000</td><td>Population size, varied by task</td></tr></table>
+<p>GABIL evaluates a hypothesized rule set using its classification accuracy on the training data. The slide deck introduces the representation, genetic operators and fitness function, but the exact rule encoding and displayed fitness equation are not sufficiently legible in the supplied slide text; therefore, they are not reconstructed here.</p>
+<h4>Two additional operators</h4>
+<ul><li><b>AddAlternative (AA):</b> generalizes a constraint on one attribute by changing a 0 to a 1 in that attribute's substring. The slide gives the example <code>10 0 10</code> becoming <code>10 1 10</code>. Reported application probability: 0.01.</li>
+<li><b>DropCondition (DC):</b> performs a stronger generalization by replacing all 0 bits for a particular attribute with 1s. Reported application probability: 0.60.</li></ul>
+<h4>GABIL results reported</h4>
+<table><tr><th>Method</th><th>Average accuracy on 12 synthetic problems</th></tr>
+<tr><td>GABIL without AA and DC operators</td><td>92.1%</td></tr><tr><td>GABIL with AA and DC operators</td><td>95.2%</td></tr><tr><td>Symbolic learning methods cited (C4.5, ID5R, AQ14)</td><td>91.2% to 96.6%</td></tr></table>
+<p>The reported result suggests that adding the two generalization operators improved average GABIL accuracy on the stated synthetic tasks from 92.1% to 95.2%.</p>
+
+<h3 id="crowding">7. Hypothesis-Space Search, Crowding and Schemas</h3>
+<p>GA search can move abruptly through the hypothesis space: an offspring may differ substantially from its parent. The slides identify <b>crowding</b> as a practical difficulty.</p>
+<p>Crowding occurs when a highly fit individual reproduces rapidly, causing many copies of it and very similar individuals to occupy a large part of the population. This reduces diversity and can slow further progress because fewer distinct regions of the search space are explored.</p>
+<h4>Methods for reducing crowding (as listed in the slides)</h4>
+<ul><li>Change the selection function, for example use tournament or rank selection instead of roulette-wheel selection.</li><li>Use fitness sharing.</li><li>Restrict which individuals are allowed to recombine to form offspring.</li></ul>
+<h4>Schemas and schema theorem</h4>
+<p>The slide deck includes headings “Schemas”, “Consider Just Selection” and “Schema Theorem”, asking how the evolution of a population can be characterized. However, the detailed schema notation, derivation and theorem equation are not legible/present in the extracted slide content. The notes therefore retain the topic as a syllabus point without supplying a reconstructed theorem.</p>
+<div class="note"><b>Teaching explanation (general):</b> A schema is commonly understood as a pattern describing a subset of bit strings, with some bit positions fixed and others allowed to vary. Schema analysis studies how such patterns may increase or decrease in a population over generations. This explanatory definition is background clarification; the uploaded slides do not show the full formal derivation.</div>
+
+<h3 id="gp">8. Genetic Programming</h3>
+<p>Genetic programming evolves programs or symbolic expressions rather than fixed-length bit strings. The slide deck introduces a block-stacking problem in which the goal is to produce the word <b>UNIVERSAL</b>.</p>
+<p>The slide lists three terminals:</p>
+<ul><li><b>CS (Current Stack):</b> name of the top block on the stack, or F.</li><li><b>TB (Top Correct Block):</b> name of the topmost correct block.</li><li><b>NN (Next Necessary):</b> name of the next block needed above TB in the stack.</li></ul>
+<p>The slides report that a population of 300 programs was trained on 166 test problems and found the displayed program after 10 generations:</p>
+<div class="eq">\[\texttt{(EQ (DU (MT CS)(NOT CS)) (DU (MS NN)(NOT NN)))}\]</div>
+<p>The expression is reproduced as shown in the slide. The slides do not define every function symbol (EQ, DU, MT, MS) in the extracted text, so a precise operational interpretation is not supplied here.</p>
+
+<h3 id="evolution">9. Models of Evolution and Learning</h3>
+<h4>9.1 Lamarckian evolution</h4>
+<p>The slides describe Lamarck's proposal that experiences acquired during an organism's lifetime could directly affect the genetic makeup passed to offspring. The example given is an organism learning to avoid toxic food and supposedly passing that acquired trait genetically to its offspring.</p>
+<p>The slides contrast this with the currently accepted view that an individual's genetic makeup is not changed directly by the lifetime experience of its biological parents.</p>
+<h4>9.2 Baldwin effect</h4>
+<p>The Baldwin effect concerns the interaction between individual learning and evolution across generations. The slide deck describes the Hinton and Nowlan (1987) experiment using simple neural networks. Some network weights were fixed during an individual's lifetime while others were trainable; the genetic makeup determined which weights were trainable.</p>
+<p>When individual learning was not allowed, the population failed to improve its fitness over time. When individual learning was allowed, the population quickly improved its fitness. The classroom point is that learning during an individual's lifetime can make useful behaviours achievable and thereby influence which inherited configurations are favoured over generations, without requiring acquired traits themselves to be directly inherited.</p>
+
+<h3 id="parallel">10. Parallelizing Genetic Algorithms</h3>
+<p>The slides describe two broad approaches:</p>
+<table><tr><th>Coarse-grained parallelization</th><th>Fine-grained parallelization</th></tr>
+<tr><td>Divides the population into relatively distinct groups called <b>demes</b>.</td><td>Typically assigns one processor to each individual in the population.</td></tr>
+<tr><td>Communication and cross-fertilization occur less frequently between demes than within them.</td><td>Individuals are processed in a more distributed, fine-grained manner.</td></tr>
+<tr><td>Migration copies or transfers individuals between demes.</td><td>Parallelism is organised at the individual level.</td></tr>
+<tr><td>Can reduce crowding by maintaining separate subpopulations.</td><td>Provides a more fine-grained parallel implementation.</td></tr></table>
+</section>
+
+<hr>
+
+<section id="ial">
+<h2>B. Combining Inductive and Analytical Learning</h2>
+<h3>11. Motivation</h3>
+<p>Machine learning includes two broad paradigms:</p>
+<table><tr><th>Inductive learning</th><th>Analytical learning</th></tr>
+<tr><td>Generalizes from specific examples or data points.</td><td>Uses logical inference and prior domain knowledge.</td></tr>
+<tr><td>Builds hypotheses by detecting patterns in observed data.</td><td>Builds or refines hypotheses by deductive reasoning.</td></tr>
+<tr><td>Examples in the slides: decision-tree induction and neural-network backpropagation.</td><td>Example in the slides: PROLOG-EBG / explanation-based learning.</td></tr>
+<tr><td>Strength: works well with plentiful data and can adapt to unseen examples.</td><td>Strength: can learn from scarce data when prior knowledge is strong.</td></tr>
+<tr><td>Limitation: needs sufficient reliable labelled data; may overfit.</td><td>Limitation: depends heavily on the correctness and availability of prior knowledge.</td></tr></table>
+<p>Inductive methods provide statistical justification, while analytical methods provide logical justification. Statistical methods may be weak when data is scarce; analytical methods may be misleading when prior knowledge is incorrect or unavailable. Combining them aims to use the strengths of both.</p>
+
+<h3 id="problem">12. The Learning Problem</h3>
+<p>The slide deck defines a combined learning problem using three inputs:</p>
+<ul><li>A set of training examples \(D\), possibly containing errors.</li><li>A domain theory \(B\), possibly containing errors.</li><li>A space of candidate hypotheses \(H\).</li></ul>
+<p>The goal is to find a hypothesis that fits both the training examples and the domain theory as well as possible.</p>
+<p>The training-data error is the proportion of examples from \(D\) misclassified by \(h\):</p>
+<div class="eq">\[\operatorname{error}_{D}(h)=\text{proportion of examples in }D\text{ misclassified by }h\]</div>
+<p>The domain-theory error is the probability that \(h\) disagrees with \(B\) on the classification of a randomly drawn instance:</p>
+<div class="eq">\[\operatorname{error}_{B}(h)=\Pr[h(x)\ne B(x)]\]</div>
+<p>The slides propose minimizing a combined measure such as:</p>
+<div class="eq">\[\boxed{h^*=\arg\min_{h\in H}\left[k_D\operatorname{error}_{D}(h)+k_B\operatorname{error}_{B}(h)\right]}\]</div>
+<p>Here \(k_D\) and \(k_B\) control the relative importance assigned to data and domain theory. The slides point out that it is not obvious how to choose these weights in advance.</p>
+<div class="example"><b>Reasoning through the weights</b>
+<ul><li>If the domain theory is poor but the training data is plentiful and reliable, place greater importance on \(\operatorname{error}_D(h)\).</li><li>If the domain theory is strong but the available data is small and noisy, place greater importance on \(\operatorname{error}_B(h)\).</li></ul></div>
+<p>The slides discuss a Bayesian perspective: priors and likelihood information can be combined with observed data to obtain a posterior probability for a hypothesis. However, Bayes' theorem alone does not solve the general problem if the relevant probability distributions are themselves imperfectly known.</p>
+
+<h3>13. Three Ways to Combine Prior Knowledge and Inductive Search</h3>
+<p>The central framework in the slides identifies three approaches:</p>
+<table><tr><th>Approach</th><th>How prior knowledge is used</th><th>Example system</th></tr>
+<tr><td>Initialize the hypothesis</td><td>Construct an initial hypothesis consistent with the domain theory, then refine it using data.</td><td>KBANN</td></tr>
+<tr><td>Alter the search objective</td><td>Modify the objective so the learned hypothesis fits both training data and domain theory.</td><td>TANGENTPROP, EBNN</td></tr>
+<tr><td>Augment search operators</td><td>Use domain theory to add new or larger search steps.</td><td>FOCL</td></tr></table>
+
+<h3 id="kbann">14. Using Prior Knowledge to Initialize the Hypothesis – KBANN</h3>
+<p><b>KBANN</b> stands for Knowledge-Based Artificial Neural Network. It uses a domain theory to construct an initial neural network. Backpropagation then refines the network using the training examples.</p>
+<h4>Two stages</h4>
+<ol class="steps">
+<li><b>Analytical initialization:</b> translate the domain theory, represented as propositional non-recursive Horn clauses, into an equivalent neural network.</li>
+<li><b>Inductive refinement:</b> apply backpropagation to adjust network weights so that the network fits the training examples.</li>
+</ol>
+<p>A Horn clause in this setting is propositional if it contains no variables. The slides assume a domain theory consisting of propositional, non-recursive Horn clauses.</p>
+<h4>How a Horn clause becomes a network unit</h4>
+<p>The slides describe creating a sigmoid threshold unit for each Horn clause. A sigmoid output greater than 0.5 is interpreted as True; an output below 0.5 is interpreted as False. Inputs correspond to the antecedents of the clause.</p>
+<ul><li>For a non-negated antecedent, assign a positive weight \(+W\).</li><li>For a negated antecedent, assign a negative weight \(-W\).</li><li>Set the threshold/bias so the unit behaves like a logical AND of its antecedents.</li><li>Add near-zero additional connections between network units at successive depths, allowing later refinement.</li></ul>
+<p>The slide's displayed bias convention is \(w_0=-(n-0.5)W\), where \(n\) is the number of non-negated antecedents. With a sufficiently large \(W\), the sigmoid unit can encode the clause's logical condition.</p>
+<div class="example"><b>Simple logical illustration</b>
+<p>Consider the rule:</p>
+<div class="eq">\[\text{Cup}\leftarrow\text{Stable}\land\text{Liftable}\land\text{OpenVessel}\]</div>
+<p>The network can represent Stable, Liftable and OpenVessel as inputs to a unit that activates when all three conditions are satisfied. The output unit represents Cup.</p></div>
+<h4>The Cup example in the slides</h4>
+<p>The domain theory in the slide deck decomposes the concept Cup into intermediate properties:</p>
+<ul><li>Stable ← BottomIsFlat</li><li>Liftable ← Graspable AND Light</li><li>Graspable ← HasHandle</li><li>OpenVessel ← HasConcavity AND ConcavityPointsUp</li><li>Cup ← Stable AND Liftable AND OpenVessel</li></ul>
+<p>The examples describe physical objects using properties such as material, weight, handle, concavity and bottom shape. The initial network reproduces the domain theory. Because the domain theory and training examples are not perfectly consistent, backpropagation changes weights during refinement. The slides state that the refined network correctly classifies the displayed training examples.</p>
+<h4>Remarks and limitations</h4>
+<ul><li>KBANN uses domain-specific theory to bias generalization.</li><li>Backpropagation also has a domain-independent syntactic bias toward small weight values.</li><li>KBANN, as described in the slides, accommodates propositional domain theories consisting of variable-free Horn clauses.</li><li>Highly inaccurate domain theories can mislead KBANN; its generalization accuracy may become worse than ordinary backpropagation.</li></ul>
+
+<h3 id="tangent">15. Using Prior Knowledge to Alter the Search Objective</h3>
+<h4>15.1 TANGENTPROP</h4>
+<p>Ordinary neural-network training examples are pairs \((x_i,f(x_i))\), containing an input and its target value. TANGENTPROP additionally assumes that training derivatives of the target function are available.</p>
+<div class="eq">\[\left(x_i,\ f(x_i),\ \left.\frac{\partial f}{\partial x}\right|_{x_i}\right)\]</div>
+<p>These derivatives provide information about how the target function should change near a training point. Fitting both target values and derivatives can improve generalization when training data is sparse.</p>
+<p>The slide deck explains that backpropagation normally favours a smooth interpolation between observed points. Derivative information can override that usual inductive bias by explicitly specifying required changes in the function.</p>
+<p>For handwritten-character recognition, the slides give an example of a transformation \(s(\alpha,x_i)\) and a derivative constraint:</p>
+<div class="eq">\[\left.\frac{\partial f(s(\alpha,x_i))}{\partial\alpha}\right|_{\alpha=0}=0\]</div>
+<p>This expresses that the output should remain unchanged for the specified transformation, such as a small transformation of the input image. The general TANGENTPROP method adds a penalty for disagreement between the required training derivatives and the derivatives of the learned network.</p>
+<div class="note"><b>Source limitation:</b> The exact expanded TANGENTPROP error-function equation is shown as an image in the slides but is not legible in the extracted text. The notes therefore explain its components without inventing the missing full equation.</div>
+<h4>Remarks</h4>
+<p>The slides caution that TANGENTPROP is not robust to incorrect prior derivative information. If the supplied derivative constraints are wrong, the learner may fit incorrect derivatives and generalize less accurately than ordinary backpropagation.</p>
+
+<h4>15.2 EBNN – Explanation-Based Neural Network Learning</h4>
+<p>EBNN combines analytical explanations and neural-network learning in two important ways:</p>
+<ol><li>Instead of requiring the user to supply training derivatives, EBNN computes them for each observed training example. It explains the example using the domain theory and extracts derivative information from the explanation.</li><li>It addresses how to weight the inductive and analytical contributions. The weighting is chosen independently for each training example using a heuristic that considers how accurately the domain theory predicts that example's target value.</li></ol>
+<p>Thus, when the domain theory explains an example well, its analytical guidance can receive greater influence; when the theory predicts poorly, the data-driven component can receive greater influence.</p>
+<div class="note"><b>Source limitation:</b> The slides include the heading and an error-function image for EBNN, but the equation symbols and full formula are not reliably readable in the supplied file. The method is therefore described using the legible explanatory text only.</div>
+
+<h3 id="focl">16. Using Prior Knowledge to Augment Search Operators – FOCL</h3>
+<p><b>FOCL</b> (First Order Combined Learner) extends the purely inductive FOIL (First-Order Inductive Learner) system. Both learn sets of first-order Horn clauses to cover observed training examples.</p>
+<p>Both methods use a general-to-specific search, beginning with the most general possible Horn clause and adding conditions to specialize it.</p>
+<table><tr><th>FOIL</th><th>FOCL</th></tr>
+<tr><td>Uses inductive search operators.</td><td>Uses inductive operators plus alternatives derived from domain theory.</td></tr>
+<tr><td>At each step, adds a single new literal to revise the current clause.</td><td>Can add multiple literals in a single search step when justified by domain theory.</td></tr>
+<tr><td>Search proceeds through a sequence of smaller specializations.</td><td>Can make larger “macro-moves” through the hypothesis space.</td></tr></table>
+<p>These macro-moves can dramatically alter the search path. Consequently, the final hypothesis found by FOCL may differ from the hypothesis found by using only FOIL's original inductive search steps.</p>
+<div class="example"><b>Illustrative idea</b>
+<p>Suppose a rule learner needs to add three related conditions before a candidate rule becomes useful. A purely inductive learner may add one literal at a time. If the domain theory supports the relationship among all three conditions, FOCL can use that knowledge to introduce a multi-literal move in one step.</p></div>
+
+<h3>17. State of the Art – Coverage in the Uploaded Slides</h3>
+<p>The contents slide lists “State of the Art”, and the Genetic Algorithms deck lists “Schemas” and “Schema Theorem”. The supplied slides do not provide sufficient readable explanatory content for a detailed treatment of these topics. They are therefore retained as headings for reference rather than expanded with unverified source-specific claims.</p>
+</section>
+
+<section id="revision">
+<h2>18. Unit IV – Quick Revision Table</h2>
+<table><tr><th>Topic</th><th>Key point</th></tr>
+<tr><td>Genetic algorithm</td><td>Evolution-inspired population search using selection, crossover and mutation.</td></tr>
+<tr><td>Chromosome</td><td>Encoded representation of a candidate hypothesis.</td></tr>
+<tr><td>Fitness</td><td>Measure used to rank candidate hypotheses.</td></tr>
+<tr><td>Roulette-wheel selection</td><td>Selection probability proportional to fitness.</td></tr>
+<tr><td>Crossover</td><td>Combines bits from two parent chromosomes using a mask.</td></tr>
+<tr><td>Mutation</td><td>Randomly changes encoded bits.</td></tr>
+<tr><td>GABIL</td><td>GA for Boolean concepts represented by disjunctive propositional rules.</td></tr>
+<tr><td>Crowding</td><td>Highly fit individuals dominate and reduce population diversity.</td></tr>
+<tr><td>Genetic programming</td><td>Evolves programs/expressions; slides use a block-stacking task.</td></tr>
+<tr><td>Baldwin effect</td><td>Individual learning can influence evolutionary improvement across generations.</td></tr>
+<tr><td>Deme</td><td>Subpopulation in coarse-grained parallel GAs.</td></tr>
+<tr><td>Inductive learning</td><td>Generalizes from examples.</td></tr>
+<tr><td>Analytical learning</td><td>Uses prior domain theory and logical inference.</td></tr>
+<tr><td>KBANN</td><td>Initializes a neural network from domain theory, then refines with backpropagation.</td></tr>
+<tr><td>TANGENTPROP</td><td>Adds target-function derivative information to neural-network learning.</td></tr>
+<tr><td>EBNN</td><td>Derives training derivatives from explanations and weights theory/data per example.</td></tr>
+<tr><td>FOCL</td><td>Extends FOIL with domain-theory-guided macro-moves.</td></tr></table>
+
+<h3>Important Examination Questions</h3>
+<h4>Short-answer questions</h4>
+<ol>
+<li>What is a genetic algorithm? Explain the biological analogy.</li>
+<li>Define population, chromosome, fitness and generation.</li>
+<li>What is a crossover mask?</li>
+<li>Differentiate crossover and mutation.</li>
+<li>What is roulette-wheel selection?</li>
+<li>What is crowding? Mention methods to reduce it.</li>
+<li>What is the Baldwin effect?</li>
+<li>Differentiate coarse-grained and fine-grained parallel GAs.</li>
+<li>Differentiate inductive and analytical learning.</li>
+<li>What is the role of domain theory in KBANN?</li>
+<li>What additional information is used by TANGENTPROP?</li>
+<li>What are macro-moves in FOCL?</li>
+</ol>
+<h4>Long-answer questions</h4>
+<ol>
+<li>Explain the genetic algorithm with its representation, fitness function, selection and genetic operators.</li>
+<li>Explain GABIL and discuss the effect of AddAlternative and DropCondition operators.</li>
+<li>Discuss hypothesis-space search, crowding and methods for maintaining diversity.</li>
+<li>Explain genetic programming with the block-stacking example given in the slides.</li>
+<li>Discuss Lamarckian evolution and the Baldwin effect.</li>
+<li>Explain parallel genetic algorithms, including demes and migration.</li>
+<li>Compare inductive and analytical learning and explain the motivation for combining them.</li>
+<li>Explain the combined learning problem using training-data error and domain-theory error.</li>
+<li>Describe the KBANN algorithm and the Cup example.</li>
+<li>Explain TANGENTPROP and EBNN.</li>
+<li>Explain FOCL and compare it with FOIL.</li>
+</ol>
+<h3>Numerical / classroom practice</h3>
+<ol>
+<li>A population has fitness values 5, 15, 20 and 10. Calculate the roulette-wheel selection probability of each individual.</li>
+<li>Apply the crossover mask <code>1011</code> to Parent 1 <code>1100</code> and Parent 2 <code>0011</code>. Write one offspring using Parent 1 where the mask is 1 and Parent 2 where it is 0.</li>
+<li>For a population with 80 individuals, if 60% are replaced by crossover, how many new individuals are generated through crossover?</li>
+<li>Explain why adding irrelevant or inaccurate domain knowledge can reduce the accuracy of KBANN or TANGENTPROP.</li>
+<li>For a learning problem, explain which error should receive more weight when the data is reliable but the domain theory is poor.</li>
+</ol>
+<div class="note"><b>Source alignment and limitations:</b> These notes combine the uploaded Genetic Algorithms and Combining Inductive and Analytical Learning presentations. The GABIL result values, operator rates, KBANN Cup rules, TANGENTPROP derivative example, FOCL/FOIL distinction, Baldwin-effect experiment and parallel-GA terminology are drawn from the slides. The schema theorem, complete GABIL fitness equation, full TANGENTPROP/EBNN error equations, and detailed “State of the Art” material are not sufficiently readable or developed in the uploaded slides and have not been fabricated.</div>
+</section>
+</main></div></body></html>

@@ -1,20 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dr Kampa Lavanya | Lecture Notes</title><link rel="stylesheet" href="style.css"></head><body>
-<nav><a href="index.html">Home</a><a href="about.html">About</a><a href="research.html">Research</a><a href="projects.html">Projects</a><a href="patents.html">Patents</a><a href="programs.html">Programs</a><a href="talks.html">Talks</a><a href="students.html">Students</a><a href="notes.html" class=on>Lecture Notes</a><a href="contact.html">Contact</a></nav><div class="mini"><img src="photo.jpg" alt=""><div><b>Dr Kampa Lavanya</b><span>Assistant Professor, CSE, Acharya Nagarjuna University</span></div></div><main><h2>Lecture Notes</h2><p class="mu">Notes are HTML files. Choose a course to filter, then read online or download.</p>
-<select id="course"><option value="">All courses</option></select><div id="nl"></div><div id="viewer"></div>
-<h3 class="s">Add an HTML note (for the faculty owner)</h3>
-<div class="card">Choose an HTML file to preview it and get the two steps needed to publish it on this site.<br><br>
-<input id="hc" placeholder="Course name"> <input id="ht" placeholder="Note title"> <input id="hf" type="file" accept=".html,.htm"><pre id="out">Pick a file to see the steps.</pre></div></main>
+<nav><a href="index.html">Home</a><a href="about.html">About</a><a href="research.html">Research</a><a href="projects.html">Projects</a><a href="patents.html">Patents</a><a href="programs.html">Programs</a><a href="talks.html">Talks</a><a href="students.html">Students</a><a href="notes.html" class=on>Lecture Notes</a><a href="contact.html">Contact</a></nav><div class="mini"><img src="photo.jpg" alt=""><div><b>Dr Kampa Lavanya</b><span>Assistant Professor, CSE, Acharya Nagarjuna University</span></div></div><main><h2>Lecture Notes</h2><p class="mu">Choose a course to filter, then read online or download.</p>
+<select id="course"><option value="">All courses</option></select><div id="nl"></div><div id="viewer"></div></main>
 <footer>© Dr Kampa Lavanya · Acharya Nagarjuna University · Last updated November 2026</footer><script src="notes.js"></script><script>
 const e=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const N=window.NOTES||[],sel=document.getElementById("course"),L=document.getElementById("nl"),V=document.getElementById("viewer");
 [...new Set(N.map(n=>n.course))].forEach(c=>sel.add(new Option(c,c)));
 function show(){const c=sel.value;const r=N.filter(n=>!c||n.course===c);L.innerHTML=r.length?r.map((n,i)=>`<div class="card"><div class="top"><h3>${e(n.title)}</h3><span class="yr">${e(n.date||"")}</span></div><div class="mu">${e(n.course)} · <a href="#" data-f="${e(n.file)}">Read here</a> · <a href="${e(n.file)}" target="_blank" rel="noopener">Open in new tab</a> · <a href="${e(n.file)}" download>Download</a></div></div>`).join(""):'<p class="mu">No notes have been added yet.</p>';
 L.querySelectorAll("[data-f]").forEach(a=>a.onclick=ev=>{ev.preventDefault();V.innerHTML=`<iframe src="${a.dataset.f}" sandbox="allow-scripts allow-popups"></iframe>`;V.scrollIntoView()})}
-sel.onchange=show;show();
-const f=document.getElementById("hf");
-function gen(){const x=f.files[0];if(!x)return;const t=document.getElementById("ht").value||x.name.replace(/\.html?$/i,"");const c=document.getElementById("hc").value||"Course";
-const name=x.name.replace(/[^A-Za-z0-9._-]/g,"-");document.getElementById("out").textContent=`1) Upload "${x.name}" to the main list of the repository (name it ${name}).\n2) Paste this line inside notes.js:\n{course:${JSON.stringify(c)}, title:${JSON.stringify(t)}, file:"${name}", date:"${new Date().toISOString().slice(0,10)}"},`;
-const r=new FileReader();r.onload=()=>{V.innerHTML='<p class="mu">Preview (not published yet):</p><iframe sandbox="allow-scripts"></iframe>';V.querySelector("iframe").srcdoc=r.result};r.readAsText(x)}
-f.onchange=gen;document.getElementById("ht").oninput=gen;document.getElementById("hc").oninput=gen;</script></body></html>
+sel.onchange=show;show();</script></body></html>
